@@ -1,0 +1,10 @@
+nav {
+	background-color: #660033;
+}
+nav a:hover {
+	background-color: #cc6699;
+}
+nav span.active {
+	background-color: #990033;
+	color: white;
+}

@@ -1,0 +1,74 @@
+div.formwrapper{
+	text-align: center;
+}
+
+div.formwrapper form{
+	display: inline-block;
+}
+
+div.maindiv{
+	margin:20;
+	padding:20;
+	background-color: #fffdd0;
+}
+
+body{
+	margin:0;
+}
+
+body.error{
+	background-color:FF0000;
+}
+
+nav {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #333;
+}
+
+nav a {
+	float: left;
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+}
+
+nav a.right{
+	float: right;
+}
+
+nav a:hover {
+	background-color: #111;
+}
+
+nav span.active {
+	float: left;
+	display: block;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	background-color: #4CAF50;
+	color: white;
+}
+
+nav span.right{
+	float: right;
+}
+
+h1.error{
+	margin:0;
+	padding:20 0;
+	background-color:FF0000;
+	text-align: center;
+	color: #000000;
+}
+
+h1 p.error_type{
+	background-color: #000000;
+	color: #FFFFFF;
+	display: block;
+}

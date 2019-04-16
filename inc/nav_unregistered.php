@@ -1,0 +1,26 @@
+<?php
+$links=[
+	"index"=>[
+		"url"=>"index.php",
+		"name"=>"Home",
+		"right"=>false,
+	],
+	"login"=>[
+		"url"=>"login.php",
+		"name"=>"Logar",
+		"right"=>true,
+	],
+	"register"=>[
+		"url"=>"register.php",
+		"name"=>"Registrar",
+		"right"=>true,
+	],
+	/*
+	=>[
+		"url"=>"",
+		"name"=>"",
+	],
+	*/
+];
+include("nav.php");
+?>

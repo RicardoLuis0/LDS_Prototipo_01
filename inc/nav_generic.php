@@ -1,0 +1,11 @@
+<?php
+if($_SESSION["logged"]){
+	if($_SESSION["is_admin"]){
+		include("nav_admin.php");
+	}else{
+		include("nav_logged_in.php");
+	}
+}else{
+	include("nav_unregistered.php");
+}
+?>
