@@ -4,10 +4,13 @@ include("inc/session_setup.php");
 if($_SESSION["logged"])header("Location:index.php");
 
 if(isset($_POST["proccess"])&&$_POST["proccess"]){
-	include("inc/database.php");
+	include("inc/get_database.php");
 	if(isset($_POST["user"])){
 		if(isset($_POST["pass"])){
-			login($_POST["user"],$_POST["pass"]);
+			//login($_POST["user"],$_POST["pass"]);
+			$db=getDatabase();
+			$db->connect();
+			$db->checkLogin(new LoginData($_POST["user"],$_POST["pass"]));
 		}else{
 			$_SESSION['login_error']="missing_pass";
 		}

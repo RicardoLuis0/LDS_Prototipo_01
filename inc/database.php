@@ -1,42 +1,53 @@
 <?php
-if(!isset($_SESSION["mock_db"])){
-	$_SESSION["mock_db"]=[
-		"users"=>[
-			"admin"=>[
-				"name"=>"Administrador",
-				"pass_hash"=>password_hash("admin",PASSWORD_DEFAULT),
-				"is_admin"=>true,
-			],
-		],
-		"projects"=>[],
-	];
-}
-function login($user,$pass){
-	if(isset($_SESSION["mock_db"]["users"][$user])){
-		$user_data=$_SESSION["mock_db"]["users"][$user];
-		if(password_verify($pass,$user_data["pass_hash"])){
-			$_SESSION["logged"]=true;
-			$_SESSION["is_admin"]=$user_data["is_admin"];
-			$_SESSION["name"]=$user_data["name"];
-		}else{
-			$_SESSION["login_error"]="wrong_pass";
-		}
-	}else{
-		$_SESSION["login_error"]="wrong_user";
+class LoginData{//dados necessarios para login
+	private $login;
+	private $password;
+	public function __construct(string $login,string $password){
+		$this->login=$login;
+		$this->password=$password;
+	}
+
+	public function getLogin():string{
+		return $this->login;
+	}
+
+	public function getPassword():string{
+		return $this->password;
 	}
 }
 
-function register($user,$name,$pass){
-	if(!isset($_SESSION["mock_db"]["users"][$user])){
-		$_SESSION["mock_db"]["users"][$user]=[
-			"name"=>$name,
-			"pass_hash"=>password_hash($pass,PASSWORD_DEFAULT),
-			"is_admin"=>false,
-		];
-		return true;
-	}else{
-		$_SESSION["register_error"]="duplicate_user";
+class RegisterData{//dados necessarios para registro
+	private $login;
+	private $name;
+	private $password;
+
+	public function __construct(string $login,string $name,string $password){
+		$this->login=$login;
+		$this->name=$name;
+		$this->password=$password;
 	}
-	return false;
+
+	public function getLogin():string{
+		return $this->login;
+	}
+
+	public function getName():string{
+		return $this->name;
+	}
+
+	public function getPassword():string{
+		return $this->password;
+	}
+}
+
+abstract class Database{
+	private $connected;
+	public abstract function connect():void;
+	public abstract function disconnect():void;
+	public function isConnected():bool{
+		return $this->connected;
+	}
+	public abstract function checkLogin(LoginData $loginData):bool;
+	public abstract function registerUser(RegisterData $registerData):bool;
 }
 ?>
