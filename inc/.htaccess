@@ -1,0 +1,6 @@
+ErrorDocument 403 /inc/inc_folder_403_error.php
+Order allow,deny
+Deny from all
+<Files inc_folder_403_error.php>
+    Allow from all
+</Files>

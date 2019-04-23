@@ -4,11 +4,14 @@ include("inc/session_setup.php");
 if($_SESSION["logged"])header("Location:index.php");
 
 if(isset($_POST["proccess"])&&$_POST["proccess"]){
-	include("inc/database.php");
+	include("inc/get_database.php");
 	if(isset($_POST["user"])){
 		if(isset($_POST["name"])){
 			if(isset($_POST["pass"])){
-				if(register($_POST["user"],$_POST["name"],$_POST["pass"])){
+				$db=getDatabase();
+				$db->connect();
+				//if(register($_POST["user"],$_POST["name"],$_POST["pass"])){
+				if($db->registerUser(new RegisterData($_POST["user"],$_POST["name"],$_POST["pass"]))){
 					header("Location:login.php");
 					exit();
 				}
