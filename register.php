@@ -1,5 +1,5 @@
 <?php
-include("inc/session_setup.php");
+require_once("inc/session_setup.php");
 
 if($_SESSION["logged"])header("Location:index.php");
 
@@ -11,7 +11,7 @@ if(isset($_POST["proccess"])&&$_POST["proccess"]){
 				$db=getDatabase();
 				$db->connect();
 				//if(register($_POST["user"],$_POST["name"],$_POST["pass"])){
-				if($db->registerUser(new RegisterData($_POST["user"],$_POST["name"],$_POST["pass"]))){
+				if($db->registerUser(new RegisterData($_POST["user"],$_POST["name"],$_POST["pass"],"Student"))){
 					header("Location:login.php");
 					exit();
 				}

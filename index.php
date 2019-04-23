@@ -1,12 +1,12 @@
 <?php
 $id="index";
 $title_name="Index";
-include("inc/session_setup.php");
+require_once("inc/session_setup.php");
 include("inc/top.php");
 include("inc/nav_generic.php");
 echo "<div class=maindiv>";
-if($_SESSION["logged"]){
-	echo "<p>Bem Vindo, ".$_SESSION["name"]."</p>";
+if(is_logged()){
+	echo "<p>Bem Vindo, ".get_name()."</p>";
 }else{
 	echo "<p>Bem Vindo ao Sistema de TCC do IF</p>";
 }

@@ -1,5 +1,5 @@
 <?php
-include("inc/session_setup.php");
+require_once("inc/session_setup.php");
 
 if($_SESSION["logged"])header("Location:index.php");
 

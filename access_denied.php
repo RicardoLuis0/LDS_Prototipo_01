@@ -2,11 +2,13 @@
 include("inc/session_setup.php");
 $id=-1;
 $title_name="Acesso Negado";
-if(isset($_SESSION["403_message_absolute"])){
-	$message="<p>".$_SESSION["403_message_absolute"].".</p>";
-	unset($_SESSION["403_message_absolute"]);
-}else if(isset($_SESSION["403_message"])){
-	$message='<p>Acesso não Autorizado,<br>'.$_SESSION["403_message"].'.</p>';
+if(isset($_SESSION["403_message"])){
+	if(isset($_SESSION["403_message_absolute"])&&$_SESSION["403_message_absolute"]){
+		$message="<p>".$_SESSION["403_message"].".</p>";
+		unset($_SESSION["403_message_absolute"]);
+	}else{
+		$message='<p>Acesso não Autorizado,<br>'.$_SESSION["403_message"].'.</p>';
+	}
 	unset($_SESSION["403_message"]);
 }else{
 	$message='<p>Acesso não Autorizado</p>';

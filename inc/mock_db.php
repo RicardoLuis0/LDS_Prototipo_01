@@ -7,11 +7,13 @@ class MockDB extends Database{
 		//check session data, create mock database if necessary
 		if(!isset($_SESSION["mock_db"])){
 			$_SESSION["mock_db"]=[
+				"last_id"=>1,
 				"users"=>[
 					"admin"=>[
+						"id"=>1,
 						"name"=>"Administrador",
 						"pass_hash"=>password_hash("admin",PASSWORD_DEFAULT),
-						"is_admin"=>true,
+						"account_type"=>"Admin",
 					],
 				],
 				"projects"=>[],
@@ -31,9 +33,7 @@ class MockDB extends Database{
 		if(isset($_SESSION["mock_db"]["users"][$login])){
 			$user_data=$_SESSION["mock_db"]["users"][$login];
 			if(password_verify($pass,$user_data["pass_hash"])){
-				$_SESSION["logged"]=true;
-				$_SESSION["is_admin"]=$user_data["is_admin"];
-				$_SESSION["name"]=$user_data["name"];
+				session_login($user_data['id'],$user_data['account_type'],$user_data['name']);
 				return true;
 			}else{
 				$_SESSION["login_error"]="wrong_pass";
@@ -49,11 +49,13 @@ class MockDB extends Database{
 		$login=$registerData->getLogin();
 		$name=$registerData->getName();
 		$pass=$registerData->getPassword();
+		$account_type=$registerData->getAccountType();
 		if(!isset($_SESSION["mock_db"]["users"][$login])){
 			$_SESSION["mock_db"]["users"][$login]=[
+				"id"=>++$_SESSION['mock_db']['last_id'],
 				"name"=>$name,
 				"pass_hash"=>password_hash($pass,PASSWORD_DEFAULT),
-				"is_admin"=>false,
+				"account_type"=>$account_type,
 			];
 			return true;
 		}else{

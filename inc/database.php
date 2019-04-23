@@ -20,11 +20,13 @@ class RegisterData{//dados necessarios para registro
 	private $login;
 	private $name;
 	private $password;
+	private $account_type;
 
-	public function __construct(string $login,string $name,string $password){
+	public function __construct(string $login,string $name,string $password,string $account_type){
 		$this->login=$login;
 		$this->name=$name;
 		$this->password=$password;
+		$this->account_type=$account_type;
 	}
 
 	public function getLogin():string{
@@ -37,6 +39,10 @@ class RegisterData{//dados necessarios para registro
 
 	public function getPassword():string{
 		return $this->password;
+	}
+
+	public function getAccountType():string{
+		return $this->account_type;
 	}
 }
 
