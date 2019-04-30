@@ -1,16 +1,19 @@
 <?php
 require_once("inc/session_setup.php");
+require_once("inc/get_database.php");
 
 if($_SESSION["logged"])header("Location:index.php");
 
-if(isset($_POST["proccess"])&&$_POST["proccess"]){
-	include("inc/get_database.php");
+function proccessLogin(){
 	if(isset($_POST["user"])){
 		if(isset($_POST["pass"])){
 			//login($_POST["user"],$_POST["pass"]);
 			$db=getDatabase();
 			$db->connect();
-			$db->checkLogin(new LoginData($_POST["user"],$_POST["pass"]));
+			$data=$db->checkLogin($_POST["user"],$_POST["pass"]);
+			if($data!=null){
+				Session::doUserLogin($data);
+			}
 		}else{
 			$_SESSION['login_error']="missing_pass";
 		}
@@ -18,6 +21,10 @@ if(isset($_POST["proccess"])&&$_POST["proccess"]){
 		$_SESSION['login_error']="missing_user";
 	}
 	header("Location:login.php");
+}
+
+if(isset($_POST["proccess"])&&$_POST["proccess"]){
+	proccessLogin();
 	exit();
 }else{
 	$id="login";

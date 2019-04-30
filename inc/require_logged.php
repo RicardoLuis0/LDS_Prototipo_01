@@ -1,5 +1,5 @@
 <?php
-	if(!is_logged()){
-		do403("Você precisa estar logado para acessar esta página");
+	if(!Session::isLoggedIn()){
+		Session::do403Error("Você precisa estar logado para acessar esta página");
 	}
 ?>

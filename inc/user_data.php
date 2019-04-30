@@ -14,5 +14,8 @@ class UserData{
     public function getName():string{
         return $this->name;
     }
+    public function getID():int{
+        return $this->id;
+    }
 }
 ?>

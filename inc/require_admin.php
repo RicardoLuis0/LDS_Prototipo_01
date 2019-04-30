@@ -1,6 +1,6 @@
 <?php
 	include("require_logged.php");
-	if(get_account_type()!="Admin"){
-		do403("Nível de Acesso Insuficiente");
+	if(Session::isLoggedIn()&&Session::getUserData()->getAccountType()!="Admin"){
+		Session::do403Error("Nível de Acesso Insuficiente");
 	}
 ?>

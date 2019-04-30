@@ -1,59 +1,81 @@
 <?php
-class LoginData{//dados necessarios para login
-	private $login;
-	private $password;
-	public function __construct(string $login,string $password){
-		$this->login=$login;
-		$this->password=$password;
-	}
+require_once("database/classes.php");
+require_once("session_setup.php");
 
-	public function getLogin():string{
-		return $this->login;
-	}
+class ProjectProposalData{//dados necessarios para proposta de projeto
 
-	public function getPassword():string{
-		return $this->password;
-	}
 }
 
-class RegisterData{//dados necessarios para registro
-	private $login;
-	private $name;
-	private $password;
-	private $account_type;
+class ProjectIDData{//dados de identificacao do projeto
 
-	public function __construct(string $login,string $name,string $password,string $account_type){
-		$this->login=$login;
-		$this->name=$name;
-		$this->password=$password;
-		$this->account_type=$account_type;
-	}
-
-	public function getLogin():string{
-		return $this->login;
-	}
-
-	public function getName():string{
-		return $this->name;
-	}
-
-	public function getPassword():string{
-		return $this->password;
-	}
-
-	public function getAccountType():string{
-		return $this->account_type;
-	}
 }
 
 abstract class Database{
-	private $connected;
+	protected $connected;
+	protected abstract function getUserByID(int $id):DBUser;
+	protected abstract function getUserByLogin(string $login):DBUser;
+	protected abstract function addUser(DBUserAdd $data):bool;
+	/*
+	protected abstract function addProject(DBProjectAdd $proj):bool;
+	protected abstract function getProjectByID(int $id):DBProject;
+	protected abstract function getUserProjects(int $user_id):array;
+	protected abstract function acceptProject(int $id):bool;
+	*/
 	public abstract function connect():void;
 	public abstract function disconnect():void;
+	protected function __construct__(){
+		$this->connected=false;
+	}
 	public function isConnected():bool{
 		return $this->connected;
 	}
-	public abstract function checkLogin(LoginData $loginData):bool;
-	public abstract function registerUser(RegisterData $registerData):bool;
+	public function checkLogin(string $login,string $password):UserData{
+		if(!$this->isConnected()){
+			$_SESSION['login_error']='db_error';
+			return null;
+		}
+		$user=$this->getUserByLogin($login);
+		if($user===null){
+			$_SESSION['login_error']='wrong_user';
+		}else if(!$user->check_password($password)){
+			$_SESSION['login_error']='wrong_pass';
+		}else{
+			//session_login($user->makeUserData());
+			return $user->makeUserData();
+		}
+		return null;
+	}
+	public function registerUser(string $login,string $name,string $password,string $account_type):bool{
+		if($this->addUser(new DBUserAdd($login,$name,$password,$account_type))){
+			return true;
+		}else{
+			$_SESSION['register_error']='duplicate_user';
+			return false;
+		}
+	}
+	public function registerProjectProposal(int $teacher_id,string $project_name,string $project_description):bool{
+		if(Session::isLoggedIn()){
+			return addProject(Session::getUserData()->getId(),$teacher_id);
+		}else{
+			return false;
+		}
+	}
+	/*
+	public function registerProjectProposal(ProjectProposalData $projectData):bool{
+		return false;
+	}
+	public function resendProjectProposal(ProjectProposalData $projectData):bool{
+		return false;
+	}
+	public function acceptProjectProposal(ProjectIDData $acceptData):bool{
+		return false;
+	}
+	public function rejectProjectProposal(ProjectIDData $rejectData):bool{
+		return false;
+	}
+	public function removeProjectProposal(ProjectIDData $rejectData):bool{
+		return false;
+	}
+	*/
 }
 ?>
