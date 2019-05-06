@@ -31,7 +31,7 @@ class MockDB extends Database{
 		$this->connected=false;
 	}
 
-	protected function getUserByID(int $id):DBUser{
+	protected function getUserByID(int $id):?DBUser{
 		foreach($_SESSION['mock_db']['users'] as $login => $user){
 			if($user['id']==$id){
 				return new DBUser($user['id'],$login,$user['name'],$user['hash'],$user['account_type']);
@@ -39,7 +39,7 @@ class MockDB extends Database{
 		}
 		return null;
 	}
-	protected function getUserByLogin(string $login):DBUser{
+	protected function getUserByLogin(string $login):?DBUser{
 		if(isset($_SESSION['mock_db']['users'][$login])){
 			$data=$_SESSION['mock_db']['users'][$login];
 			return new DBUser($data['id'],$login,$data['name'],$data['hash'],$data['account_type']);

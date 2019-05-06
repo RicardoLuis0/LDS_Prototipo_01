@@ -12,13 +12,13 @@ class ProjectIDData{//dados de identificacao do projeto
 
 abstract class Database{
 	protected $connected;
-	protected abstract function getUserByID(int $id):DBUser;
-	protected abstract function getUserByLogin(string $login):DBUser;
+	protected abstract function getUserByID(int $id):?DBUser;
+	protected abstract function getUserByLogin(string $login):?DBUser;
 	protected abstract function addUser(DBUserAdd $data):bool;
 	/*
 	protected abstract function addProject(DBProjectAdd $proj):bool;
-	protected abstract function getProjectByID(int $id):DBProject;
-	protected abstract function getUserProjects(int $user_id):array;
+	protected abstract function getProjectByID(int $id):?DBProject;
+	protected abstract function getUserProjects(int $user_id):?array;
 	protected abstract function acceptProject(int $id):bool;
 	*/
 	public abstract function connect():void;
@@ -29,7 +29,7 @@ abstract class Database{
 	public function isConnected():bool{
 		return $this->connected;
 	}
-	public function checkLogin(string $login,string $password):UserData{
+	public function checkLogin(string $login,string $password):?UserData{
 		if(!$this->isConnected()){
 			$_SESSION['login_error']='db_error';
 			return null;
