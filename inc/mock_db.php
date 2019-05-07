@@ -1,5 +1,6 @@
 <?php
 require_once('database.php');
+require_once("random/rand_string.php");
 class MockDB extends Database{
 	public function connect():void{
 		//check session status
@@ -16,6 +17,9 @@ class MockDB extends Database{
 						'name'=>'Administrador',
 						'hash'=>password_hash('admin',PASSWORD_DEFAULT),
 						'account_type'=>'Admin',
+						'email'=>'ricolvs123@gmail.com',
+						'activated'=>true,
+						'activation_key'=>'',
 					],
 				],
 				'projects'=>[
@@ -34,7 +38,7 @@ class MockDB extends Database{
 	protected function getUserByID(int $id):?DBUser{
 		foreach($_SESSION['mock_db']['users'] as $login => $user){
 			if($user['id']==$id){
-				return new DBUser($user['id'],$login,$user['name'],$user['hash'],$user['account_type']);
+				return new DBUser($user['id'],$user['activated'],$user['activation_key'],$login,$user['name'],$user['hash'],$user['account_type'],$user['email']);
 			}
 		}
 		return null;
@@ -42,7 +46,7 @@ class MockDB extends Database{
 	protected function getUserByLogin(string $login):?DBUser{
 		if(isset($_SESSION['mock_db']['users'][$login])){
 			$data=$_SESSION['mock_db']['users'][$login];
-			return new DBUser($data['id'],$login,$data['name'],$data['hash'],$data['account_type']);
+			return new DBUser($data['id'],$data['activated'],$data['activation_key'],$login,$data['name'],$data['hash'],$data['account_type'],$data['email']);
 		}else{
 			return null;
 		}
@@ -55,6 +59,9 @@ class MockDB extends Database{
 				'name'=>$data->getName(),
 				'hash'=>$data->makeHash(),
 				'account_type'=>$data->getAccountType(),
+				'email'=>$data->getEMail(),
+				'activated'=>false,
+				'activation_key'=>randomString(60),//random string
 			];
 			return true;
 		}else{

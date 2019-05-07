@@ -6,20 +6,24 @@ if($_SESSION["logged"])header("Location:index.php");
 if(isset($_POST["proccess"])&&$_POST["proccess"]){
 	include("inc/get_database.php");
 	if(isset($_POST["user"])){
-		if(isset($_POST["name"])){
-			if(isset($_POST["pass"])){
-				$db=getDatabase();
-				$db->connect();
-				//if(register($_POST["user"],$_POST["name"],$_POST["pass"])){
-				if($db->registerUser($_POST["user"],$_POST["name"],$_POST["pass"],"Student")){
-					header("Location:login.php");
-					exit();
+		if(isset($_POST['email'])){
+			if(isset($_POST["name"])){
+				if(isset($_POST["pass"])){
+					$db=getDatabase();
+					$db->connect();
+					//if(register($_POST["user"],$_POST["name"],$_POST["pass"])){
+					if($db->registerUser($_POST["user"],$_POST["name"],$_POST["pass"],"Student",$_POST['email'])){
+						header("Location:login.php");
+						exit();
+					}
+				}else{
+					$_SESSION['register_error']="missing_pass";
 				}
 			}else{
-				$_SESSION['register_error']="missing_pass";
+				$_SESSION['register_error']="missing_name";
 			}
 		}else{
-			$_SESSION['register_error']="missing_name";
+			$_SESSION['register_error']="missing_email";
 		}
 	}else{
 		$_SESSION['register_error']="missing_user";
@@ -40,6 +44,7 @@ if(isset($_POST["proccess"])&&$_POST["proccess"]){
 			case "missing_user":
 			case "missing_name":
 			case "missing_pass":
+			case "missing_email":
 				echo "Favor Preencher todos campos";
 				break;
 			default:
@@ -54,6 +59,7 @@ if(isset($_POST["proccess"])&&$_POST["proccess"]){
 		<input type="hidden" name="proccess" value="true">
 		<p><label for="user">Usuário: </label><input type="text" id="user" name="user"></p>
 		<p><label for="user">Nome: </label><input type="text" id="name" name="name"></p>
+		<p><label for="email">E-Mail: </label><input type="text" id="email" name="email"></p>
 		<p><label for="pass">Senha: </label><input type="password" id="pass" name="pass"></p>
 		<input type="submit" value="Registrar">
 	</form></div>';

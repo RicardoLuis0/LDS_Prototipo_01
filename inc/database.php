@@ -45,8 +45,8 @@ abstract class Database{
 		}
 		return null;
 	}
-	public function registerUser(string $login,string $name,string $password,string $account_type):bool{
-		if($this->addUser(new DBUserAdd($login,$name,$password,$account_type))){
+	public function registerUser(string $login,string $name,string $password,string $account_type,string $email):bool{
+		if($this->addUser(new DBUserAdd($login,$name,$password,$account_type,$email))){
 			return true;
 		}else{
 			$_SESSION['register_error']='duplicate_user';
