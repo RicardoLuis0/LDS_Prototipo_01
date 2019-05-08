@@ -1,25 +1,32 @@
 <?php
-include("inc/session_setup.php");
+require_once("inc/session_setup.php");
 
-if($_SESSION["logged"])header("Location:index.php");
+require_once('inc/require_admin.php');
+
+require_once('inc/mail/mail.php');
+
+//if($_SESSION["logged"])header("Location:index.php");
 
 if(isset($_POST["proccess"])&&$_POST["proccess"]){
 	include("inc/get_database.php");
 	if(isset($_POST["user"])){
-		if(isset($_POST["name"])){
-			if(isset($_POST["pass"])){
+		if(isset($_POST['email'])){
+			if(isset($_POST["name"])){
 				$db=getDatabase();
 				$db->connect();
-				//if(register($_POST["user"],$_POST["name"],$_POST["pass"])){
-				if($db->registerUser(new RegisterData($_POST["user"],$_POST["name"],$_POST["pass"]))){
-					header("Location:login.php");
+				$key=$db->registerUser($_POST["user"],$_POST["name"],"Student",$_POST['email']);
+				if($key!=null){
+					//echo '<a href="activate.php?user='.$_POST['user'].'&key='.$key.'">Ativação</a>';
+					//TODO mandar email com ativacao
+					Mailer::sendActivation($_POST['email'],$_POST["user"],$key);
+					header("Location:register.php");
 					exit();
 				}
 			}else{
-				$_SESSION['register_error']="missing_pass";
+				$_SESSION['register_error']="missing_name";
 			}
 		}else{
-			$_SESSION['register_error']="missing_name";
+			$_SESSION['register_error']="missing_email";
 		}
 	}else{
 		$_SESSION['register_error']="missing_user";
@@ -40,6 +47,7 @@ if(isset($_POST["proccess"])&&$_POST["proccess"]){
 			case "missing_user":
 			case "missing_name":
 			case "missing_pass":
+			case "missing_email":
 				echo "Favor Preencher todos campos";
 				break;
 			default:
@@ -53,8 +61,8 @@ if(isset($_POST["proccess"])&&$_POST["proccess"]){
 	<form action=register.php method=POST>
 		<input type="hidden" name="proccess" value="true">
 		<p><label for="user">Usuário: </label><input type="text" id="user" name="user"></p>
-		<p><label for="user">Nome: </label><input type="text" id="name" name="name"></p>
-		<p><label for="pass">Senha: </label><input type="password" id="pass" name="pass"></p>
+		<p><label for="name">Nome: </label><input type="text" id="name" name="name"></p>
+		<p><label for="email">E-Mail: </label><input type="text" id="email" name="email"></p>
 		<input type="submit" value="Registrar">
 	</form></div>';
 	include("inc/bottom.php");

@@ -1,5 +1,4 @@
 <?php
-$_SESSION['403_message_absolute']="Acesso Negado";
-header("location:/access_denied.php");
-exit();
+require_once("session_setup.php");
+Session::do403Error("Acesso Negado",true);
 ?>

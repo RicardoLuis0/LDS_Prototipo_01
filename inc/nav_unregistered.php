@@ -10,11 +10,6 @@ $links=[
 		"name"=>"Logar",
 		"right"=>true,
 	],
-	"register"=>[
-		"url"=>"register.php",
-		"name"=>"Registrar",
-		"right"=>true,
-	],
 	/*
 	=>[
 		"url"=>"",
