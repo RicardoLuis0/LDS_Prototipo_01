@@ -12,22 +12,32 @@ class ProjectIDData{//dados de identificacao do projeto
 
 abstract class Database{
 	protected $connected;
-	protected abstract function getUserByID(int $id):?DBUser;
-	protected abstract function getUserByLogin(string $login):?DBUser;
-	protected abstract function addUser(DBUserAdd $data):bool;
+	public abstract function connect():void;
+	public abstract function disconnect():void;
+	protected abstract function getUserByID(int $id):?DBUser;//returns found user
+	protected abstract function getUserByLogin(string $login):?DBUser;//returns found user
+	protected abstract function activateUser(string $login,string $password):bool;
+	protected abstract function changeEmail(string $new_email):bool;
+	protected abstract function addUser(DBUserAdd $data):?string;//returns activation key
+	protected abstract function regenKey(string $login):?string;//regenerate activation key, returns null if user is inexistent or already activated
 	/*
 	protected abstract function addProject(DBProjectAdd $proj):bool;
 	protected abstract function getProjectByID(int $id):?DBProject;
 	protected abstract function getUserProjects(int $user_id):?array;
 	protected abstract function acceptProject(int $id):bool;
 	*/
-	public abstract function connect():void;
-	public abstract function disconnect():void;
-	protected function __construct__(){
+	public function __construct(){
 		$this->connected=false;
 	}
 	public function isConnected():bool{
 		return $this->connected;
+	}
+	public function checkActivationKey(string $login,string $key):bool{
+		if(!$this->isConnected()){
+			return false;
+		}
+		$user=$this->getUserByLogin($login);
+		return($user&&(!$user->isActivated())&&password_verify($key,$user->getHash()));
 	}
 	public function checkLogin(string $login,string $password):?UserData{
 		if(!$this->isConnected()){
@@ -37,22 +47,48 @@ abstract class Database{
 		$user=$this->getUserByLogin($login);
 		if($user===null){
 			$_SESSION['login_error']='wrong_user';
+		}else if(!$user->isActivated()){
+			$_SESSION['login_error']='inactive_account';
 		}else if(!$user->check_password($password)){
 			$_SESSION['login_error']='wrong_pass';
 		}else{
-			//session_login($user->makeUserData());
 			return $user->makeUserData();
 		}
 		return null;
 	}
-	public function registerUser(string $login,string $name,string $password,string $account_type,string $email):bool{
-		if($this->addUser(new DBUserAdd($login,$name,$password,$account_type,$email))){
-			return true;
+	public function activateAccount(string $login,string $password,string $key):bool{
+		if($this->checkActivationKey($login,$key)){
+			return $this->activateUser($login,$password);
+		}
+		return false;
+	}
+	public function registerUser(string $login,string $name,string $account_type,string $email):?string{
+		$key=$this->addUser(new DBUserAdd($login,$name,$account_type,$email));
+		if($key!=null){
+			return $key;
 		}else{
 			$_SESSION['register_error']='duplicate_user';
-			return false;
+			return null;
 		}
 	}
+	public function isActivated(string $login):bool{
+		$user=$this->getUserByLogin($login);
+		if($user){
+			return $user->isActivated();
+		}
+		return false;
+	}
+	public function resendKey(string $login,?string $email=null):?string{
+		if(!$this->isActivated($login)){
+			//$user=getUserByLogin($login);
+			$key=$this->regenKey($login);
+			if($key&&$email!=null){
+				$this->changeEmail($email);
+			}
+			return $key;
+		}
+	}
+	/*
 	public function registerProjectProposal(int $teacher_id,string $project_name,string $project_description):bool{
 		if(Session::isLoggedIn()){
 			return addProject(Session::getUserData()->getId(),$teacher_id);
@@ -60,20 +96,16 @@ abstract class Database{
 			return false;
 		}
 	}
-	/*
-	public function registerProjectProposal(ProjectProposalData $projectData):bool{
+	public function modifyProjectProposal(???):bool{
 		return false;
 	}
-	public function resendProjectProposal(ProjectProposalData $projectData):bool{
+	public function acceptProjectProposal(???):bool{
 		return false;
 	}
-	public function acceptProjectProposal(ProjectIDData $acceptData):bool{
+	public function rejectProjectProposal(???):bool{
 		return false;
 	}
-	public function rejectProjectProposal(ProjectIDData $rejectData):bool{
-		return false;
-	}
-	public function removeProjectProposal(ProjectIDData $rejectData):bool{
+	public function removeProjectProposal(???):bool{
 		return false;
 	}
 	*/

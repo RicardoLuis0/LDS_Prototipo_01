@@ -1,23 +1,26 @@
 <?php
 require_once("inc/session_setup.php");
 
-if($_SESSION["logged"])header("Location:index.php");
+require_once('inc/require_admin.php');
+
+require_once('inc/mail/mail.php');
+
+//if($_SESSION["logged"])header("Location:index.php");
 
 if(isset($_POST["proccess"])&&$_POST["proccess"]){
 	include("inc/get_database.php");
 	if(isset($_POST["user"])){
 		if(isset($_POST['email'])){
 			if(isset($_POST["name"])){
-				if(isset($_POST["pass"])){
-					$db=getDatabase();
-					$db->connect();
-					//if(register($_POST["user"],$_POST["name"],$_POST["pass"])){
-					if($db->registerUser($_POST["user"],$_POST["name"],$_POST["pass"],"Student",$_POST['email'])){
-						header("Location:login.php");
-						exit();
-					}
-				}else{
-					$_SESSION['register_error']="missing_pass";
+				$db=getDatabase();
+				$db->connect();
+				$key=$db->registerUser($_POST["user"],$_POST["name"],"Student",$_POST['email']);
+				if($key!=null){
+					//echo '<a href="activate.php?user='.$_POST['user'].'&key='.$key.'">Ativação</a>';
+					//TODO mandar email com ativacao
+					Mailer::sendActivation($_POST['email'],$_POST["user"],$key);
+					header("Location:register.php");
+					exit();
 				}
 			}else{
 				$_SESSION['register_error']="missing_name";
@@ -58,9 +61,8 @@ if(isset($_POST["proccess"])&&$_POST["proccess"]){
 	<form action=register.php method=POST>
 		<input type="hidden" name="proccess" value="true">
 		<p><label for="user">Usuário: </label><input type="text" id="user" name="user"></p>
-		<p><label for="user">Nome: </label><input type="text" id="name" name="name"></p>
+		<p><label for="name">Nome: </label><input type="text" id="name" name="name"></p>
 		<p><label for="email">E-Mail: </label><input type="text" id="email" name="email"></p>
-		<p><label for="pass">Senha: </label><input type="password" id="pass" name="pass"></p>
 		<input type="submit" value="Registrar">
 	</form></div>';
 	include("inc/bottom.php");

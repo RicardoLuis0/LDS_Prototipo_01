@@ -5,6 +5,11 @@ $links=[
 		"name"=>"Home",
 		"right"=>false,
 	],
+	"register"=>[
+		"url"=>"register.php",
+		"name"=>"Registrar Usuários",
+		"right"=>false,
+	],
 	"logoff"=>[
 		"url"=>"logoff.php",
 		"name"=>"Deslogar",
