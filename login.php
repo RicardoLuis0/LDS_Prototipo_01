@@ -44,6 +44,8 @@ if(isset($_POST["proccess"])&&$_POST["proccess"]){
 			case "missing_pass":
 				echo "Favor Preencher todos campos";
 				break;
+			case "inactive_account":
+				echo "Favor Ativar a Conta";
 			default:
 				echo "Erro em Login";
 				break;

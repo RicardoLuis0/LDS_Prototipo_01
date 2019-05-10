@@ -9,18 +9,31 @@ require_once('inc/mail/mail.php');
 
 if(isset($_POST["proccess"])&&$_POST["proccess"]){
 	include("inc/get_database.php");
-	if(isset($_POST["user"])){
-		if(isset($_POST['email'])){
-			if(isset($_POST["name"])){
-				$db=getDatabase();
-				$db->connect();
-				$key=$db->registerUser($_POST["user"],$_POST["name"],"Student",$_POST['email']);
-				if($key!=null){
-					//echo '<a href="activate.php?user='.$_POST['user'].'&key='.$key.'">Ativação</a>';
-					//TODO mandar email com ativacao
-					Mailer::sendActivation($_POST['email'],$_POST["user"],$key);
-					header("Location:register.php");
-					exit();
+	if(isset($_POST["user"])&&strlen($_POST["user"])>0){
+		if(isset($_POST['email'])&&strlen($_POST["email"])>0){
+			if(isset($_POST["name"])&&strlen($_POST["name"])>0){
+				if(isset($_POST["type"])&&strlen($_POST["type"])>0){
+					$type=$_POST["type"];
+					if($type=="Student"||$type=="Teacher"){
+						$login=$_POST["user"];
+						$name=$_POST["name"];
+						$email=$_POST['email'];
+						$db=getDatabase();
+						$db->connect();
+						$key=$db->registerUser($login,$name,$type,$email);
+						if($key!=null){
+							Mailer::sendActivation($email,$login,$key);
+							header("Location:register.php");
+							exit();
+						}else if(!isset($_SESSION['register_error'])){
+							$_SESSION['register_error']="???";
+						}
+					}else{
+						$_SESSION['register_error']="invalid_type";
+
+					}
+				}else{
+					$_SESSION['register_error']="missing_type";
 				}
 			}else{
 				$_SESSION['register_error']="missing_name";
@@ -44,6 +57,7 @@ if(isset($_POST["proccess"])&&$_POST["proccess"]){
 			case "duplicate_user";
 				echo "Usuário já Existente";
 				break;
+			case "missing_type":
 			case "missing_user":
 			case "missing_name":
 			case "missing_pass":
@@ -63,6 +77,10 @@ if(isset($_POST["proccess"])&&$_POST["proccess"]){
 		<p><label for="user">Usuário: </label><input type="text" id="user" name="user"></p>
 		<p><label for="name">Nome: </label><input type="text" id="name" name="name"></p>
 		<p><label for="email">E-Mail: </label><input type="text" id="email" name="email"></p>
+		<p><label for="type">Tipo de Conta: </label><select id="type" name="type">
+			<option value="Student">Estudante</option>
+			<option value="Teacher">Professor</option>
+		</select></p>
 		<input type="submit" value="Registrar">
 	</form></div>';
 	include("inc/bottom.php");
