@@ -1,0 +1,20 @@
+<?php
+$links=[
+	"index"=>[
+		"url"=>"index.php",
+		"name"=>"Home",
+		"right"=>false,
+	],
+	"projects"=>[
+		"url"=>"student_projects.php",
+		"name"=>"Meus Projetos",
+		"right"=>false,
+	],
+	"logoff"=>[
+		"url"=>"logoff.php",
+		"name"=>"Deslogar",
+		"right"=>true,
+	],
+];
+include("nav.php");
+?>

@@ -3,12 +3,12 @@ $id="index";
 $title_name="Index";
 require_once("inc/session_setup.php");
 include("inc/top.php");
-include("inc/nav_generic.php");
+include("inc/pages/nav/nav_generic.php");
 echo "<div class=maindiv>";
 if(Session::isLoggedIn()){
-	echo "<p>Bem Vindo, ".Session::getUserData()->getName()."</p>";
+	include("inc/pages/index/index_logged_in.php");
 }else{
-	echo "<p>Bem Vindo ao Sistema de TCC do IF</p>";
+	include("inc/pages/index/index_logged_off.php");
 }
 echo "</div>";
 include("inc/bottom.php");

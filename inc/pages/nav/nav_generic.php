@@ -7,8 +7,10 @@ if(Session::isLoggedIn()){
 		include("nav_unregistered.php");
 		break;
 	case "Student":
+		include("nav_student.php");
+		break;
 	case "Teacher":
-		include("nav_logged_in.php");
+		include("nav_teacher.php");
 		break;
 	case "Admin":
 		include("nav_admin.php");
