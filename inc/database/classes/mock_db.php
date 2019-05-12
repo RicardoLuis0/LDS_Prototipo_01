@@ -46,9 +46,8 @@ class MockDB extends Database{
 		if(isset($_SESSION['mock_db']['users'][$login])){
 			$data=$_SESSION['mock_db']['users'][$login];
 			return new DBUser($data['id'],$data['activated'],$login,$data['name'],$data['hash'],$data['account_type'],$data['email']);
-		}else{
-			return null;
 		}
+		return null;
 	}
 
 	protected function addUser(DBUserAdd $data):?string{
@@ -64,9 +63,8 @@ class MockDB extends Database{
 				//'activation_key'=>randomString(60),
 			];
 			return $this->regenKey($data->getLogin());
-		}else{
-			return null;
 		}
+		return null;
 	}
 	protected function changeEmail(string $new_email):bool{
 		if(isset($_SESSION['mock_db']['users'][$login])){
@@ -91,6 +89,7 @@ class MockDB extends Database{
 			$_SESSION['mock_db']['users'][$login]['hash']=password_hash($password,PASSWORD_DEFAULT);
 			return true;
 		}
+		return false;
 	}
 }
 ?>
