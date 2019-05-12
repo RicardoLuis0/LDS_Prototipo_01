@@ -17,7 +17,7 @@ abstract class Database{
 	protected abstract function getUserByID(int $id):?DBUser;//returns found user
 	protected abstract function getUserByLogin(string $login):?DBUser;//returns found user
 	protected abstract function activateUser(string $login,string $password):bool;
-	protected abstract function changeEmail(string $new_email):bool;
+	protected abstract function changeEmail(string $login,string $new_email):bool;
 	protected abstract function addUser(DBUserAdd $data):?string;//returns activation key
 	protected abstract function regenKey(string $login):?string;//regenerate activation key, returns null if user is inexistent or already activated
 	/*
@@ -83,7 +83,7 @@ abstract class Database{
 			//$user=getUserByLogin($login);
 			$key=$this->regenKey($login);
 			if($key&&$email!=null){
-				$this->changeEmail($email);
+				$this->changeEmail($login,$email);
 			}
 			return $key;
 		}

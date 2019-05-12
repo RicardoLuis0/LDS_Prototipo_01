@@ -1,6 +1,6 @@
 <?php
-require_once('database.php');
-require_once("random/rand_string.php");
+require_once('inc/database.php');
+require_once("inc/random/rand_string.php");
 class MockDB extends Database{
 	public function connect():void{
 		//check session status
@@ -66,7 +66,7 @@ class MockDB extends Database{
 		}
 		return null;
 	}
-	protected function changeEmail(string $new_email):bool{
+	protected function changeEmail(string $login,string $new_email):bool{
 		if(isset($_SESSION['mock_db']['users'][$login])){
 			$_SESSION['mock_db']['users'][$login]['email']=$new_email;
 			return true;
