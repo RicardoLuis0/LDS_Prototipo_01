@@ -1,6 +1,6 @@
 <?php
-require_once("inc/session_setup.php");
-include("inc/require_logged.php");
+require_once("inc/access_control.php");
+AccessControl::requireLoggedIn(true);
 Session::doUserLogoff();
 header("Location:login.php");
 ?>

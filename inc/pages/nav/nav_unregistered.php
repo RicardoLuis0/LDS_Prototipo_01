@@ -10,12 +10,6 @@ $links=[
 		"name"=>"Logar",
 		"right"=>true,
 	],
-	/*
-	=>[
-		"url"=>"",
-		"name"=>"",
-	],
-	*/
 ];
 include("nav.php");
 ?>

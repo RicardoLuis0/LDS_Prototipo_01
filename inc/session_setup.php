@@ -7,6 +7,12 @@ class Session{
         header("location:/access_denied.php");
         exit();
     }
+    public static function do401Error(string $message,bool $absolute_message=false){
+        $_SESSION['401_message_absolute']=$absolute_message;
+        $_SESSION['401_message']=$message;
+        header("location:/access_denied.php");
+        exit();
+    }
     public static function initSession(){
         if(session_status()==PHP_SESSION_NONE)session_start();
         if(!isset($_SESSION['logged']))$_SESSION['logged']=false;

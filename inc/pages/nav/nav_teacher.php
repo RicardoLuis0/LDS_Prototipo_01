@@ -5,22 +5,11 @@ $links=[
 		"name"=>"Home",
 		"right"=>false,
 	],
-	"projects"=>[
-		"url"=>"projects.php",
-		"name"=>"Meus Projetos",
-		"right"=>false,
-	],
 	"logoff"=>[
 		"url"=>"logoff.php",
 		"name"=>"Deslogar",
 		"right"=>true,
 	],
-	/*
-	=>[
-		"url"=>"",
-		"name"=>"",
-	],
-	*/
 ];
 include("nav.php");
 ?>

@@ -1,70 +1,11 @@
 <?php
-require_once("inc/session_setup.php");
-
-require_once('inc/require_admin.php');
-
+require_once("inc/access_control.php");
 require_once('inc/mail/mail.php');
-
-//if($_SESSION["logged"])header("Location:index.php");
-
+require_once("inc/get_database.php");
+AccessControl::requireType("Admin");
 if(isset($_POST["proccess"])&&$_POST["proccess"]){
-	include("inc/get_database.php");
-	if(isset($_POST["user"])){
-		if(isset($_POST['email'])){
-			if(isset($_POST["name"])){
-				$db=getDatabase();
-				$db->connect();
-				$key=$db->registerUser($_POST["user"],$_POST["name"],"Student",$_POST['email']);
-				if($key!=null){
-					//echo '<a href="activate.php?user='.$_POST['user'].'&key='.$key.'">Ativação</a>';
-					//TODO mandar email com ativacao
-					Mailer::sendActivation($_POST['email'],$_POST["user"],$key);
-					header("Location:register.php");
-					exit();
-				}
-			}else{
-				$_SESSION['register_error']="missing_name";
-			}
-		}else{
-			$_SESSION['register_error']="missing_email";
-		}
-	}else{
-		$_SESSION['register_error']="missing_user";
-	}
-	header("Location:register.php");
-	exit();
+	include("inc/pages/register/register_proccess.php");
 }else{
-	$id="register";
-	$title_name="Registro";
-	include("inc/top.php");
-	include("inc/nav_generic.php");
-	if(isset($_SESSION['register_error'])){
-		echo "<h1 class=error>";
-		switch($_SESSION['register_error']){
-			case "duplicate_user";
-				echo "Usuário já Existente";
-				break;
-			case "missing_user":
-			case "missing_name":
-			case "missing_pass":
-			case "missing_email":
-				echo "Favor Preencher todos campos";
-				break;
-			default:
-				echo "Erro em Registro";
-				break;
-		}
-		echo "</h1>";
-		unset($_SESSION['register_error']);
-	}
-	echo '<div class=formwrapper>
-	<form action=register.php method=POST>
-		<input type="hidden" name="proccess" value="true">
-		<p><label for="user">Usuário: </label><input type="text" id="user" name="user"></p>
-		<p><label for="name">Nome: </label><input type="text" id="name" name="name"></p>
-		<p><label for="email">E-Mail: </label><input type="text" id="email" name="email"></p>
-		<input type="submit" value="Registrar">
-	</form></div>';
-	include("inc/bottom.php");
+	include("inc/pages/register/register_form.php");
 }
 ?>

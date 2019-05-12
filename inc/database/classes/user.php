@@ -1,5 +1,5 @@
 <?php
-require_once(realpath(__DIR__."/../../user_data.php"));
+require_once("inc/user_data.php");
 class DBUserAdd{
 	private $login;
 	private $name;
