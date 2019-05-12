@@ -1,7 +1,7 @@
 <?php
 $id=-1;
 $title_name="Ativação de Conta";
-include("inc/top.php");
+include("inc/pages/top.php");
 include("inc/pages/nav/nav_generic.php");
 if($db->checkActivationKey($login,$key)){
     echo '<form action="?user='.$login.'&key='.$key.'" method="POST">
@@ -11,4 +11,4 @@ if($db->checkActivationKey($login,$key)){
 }else{
     echo '<p>Usuário ou chave inválidas</p>';
 }
-include("inc/bottom.php");
+include("inc/pages/bottom.php");

@@ -1,5 +1,5 @@
 <?php
-require_once("session_setup.php");
+require_once("inc/session_setup.php");
 if(Session::isLoggedIn()){
 	switch(Session::getUserData()->getAccountType()){
 	default:

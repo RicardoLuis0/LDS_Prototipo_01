@@ -1,7 +1,7 @@
 <?php
 $id="login";
 $title_name="Login";
-include("inc/top.php");
+include("inc/pages/top.php");
 include("inc/pages/nav/nav_generic.php");
 if(isset($_SESSION['login_error'])){
     echo "<h1 class=error>";
@@ -32,4 +32,4 @@ echo '<div class=formwrapper>
     <p><label for="pass">Senha: </label><input type="password" id="pass" name="pass"></p>
     <input type="submit" value="Logar">
 </form></div>';
-include("inc/bottom.php");
+include("inc/pages/bottom.php");

@@ -1,7 +1,7 @@
 <?php
 $id="register";
 $title_name="Registro";
-include("inc/top.php");
+include("inc/pages/top.php");
 include("inc/pages/nav/nav_generic.php");
 if(isset($_SESSION['register_error'])){
     echo "<h1 class=error>";
@@ -35,4 +35,4 @@ echo '<div class=formwrapper>
     </select></p>
     <input type="submit" value="Registrar">
 </form></div>';
-include("inc/bottom.php");
+include("inc/pages/bottom.php");

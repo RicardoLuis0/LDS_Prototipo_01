@@ -6,8 +6,8 @@ if($db->activateAccount($login,$pass,$key)){
 }else{
     $id=-1;
     $title_name="Ativação de Conta";
-    include("inc/top.php");
+    include("inc/pages/top.php");
     include("inc/pages/nav/nav_generic.php");
     echo '<p>Usuário ou chave inválidas</p>';
-    include("inc/bottom.php");
+    include("inc/pages/bottom.php");
 }
