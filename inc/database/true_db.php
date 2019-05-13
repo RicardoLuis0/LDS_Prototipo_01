@@ -74,7 +74,7 @@ class DB extends Database{
 	}
 
 	protected function activateUser(string $login,string $password):bool{
-		$sql="update table set hash='".password_hash($password,PASSWORD_DEFAULT)."',account_activated=true where login='$login';";
+		$sql="update users set hash='".password_hash($password,PASSWORD_DEFAULT)."',account_activated=true where login='$login';";
 		return ($this->db->query($sql)===true);
 	}
 }
