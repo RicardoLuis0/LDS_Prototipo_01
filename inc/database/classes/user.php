@@ -28,10 +28,6 @@ class DBUserAdd{
 	public function getEMail():string{
 		return $this->email;
 	}
-	
-	public function getInsertValues(string $hash):string{
-		return "false,'$this->login','$this->name','$hash','$this->account_type','$this->email'";//account_activated,login,name,hash,account_type,email
-	}
 }
 class DBUser{
 	private $id;//int
