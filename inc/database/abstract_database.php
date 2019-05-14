@@ -14,7 +14,8 @@ abstract class Database{
 	protected abstract function addUser(DBUserAdd $data):?string;//returns activation key
 	protected abstract function regenKey(string $login):?string;//regenerate activation key, returns null if user is inexistent or already activated
 //project
-	protected abstract function addProject(DBProjectAdd $proj):bool;
+	protected abstract function addProject(DBProjectAdd $proj,bool $draft):bool;
+	protected abstract function studentSendDraft(int $user_id,int $project_id):bool;
 	protected abstract function getProjectByID(int $id):?DBProject;
 	protected abstract function getStudentProjects(int $id):array;
 	protected abstract function getTeacherProjects(int $id):array;

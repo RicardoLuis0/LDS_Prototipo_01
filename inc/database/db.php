@@ -63,7 +63,7 @@ class DB extends Database{
 	protected function addUser(DBUserAdd $data):?string{
 		$key=$this->generateKey();
 		$sql="insert into users(login,name,hash,account_type,email) values (".$this->getAddUserValues($data,$key).");";
-		if($this->db->query($sql)===true){
+		if($this->db->query($sql)>0){
 			return $key;
 		}
 		return null;
@@ -84,13 +84,29 @@ class DB extends Database{
 		return ($this->db->query($sql)>0);
 	}
 
-	protected function addProject(DBProjectAdd $proj):bool{
-		//TODO
+	protected function addProject(DBProjectAdd $proj,bool $draft):bool{
+		$sql="insert into projects (name,description,teacher_id,status) values (".$proj->getProjectName().",".$proj->getProjectDescription().",".$proj->getTeacherId().",'".($draft?"Draft":"Pending")."');";
+		if($this->db->query($sql)>0){
+			$id=$this->db->last_id;
+			$sql="insert into project_student (project_id,student_id) values (".$id.",".$proj->getStudentId().");";
+			if($this->db->query($sql)>0){
+				return true;
+			}else{
+				$sql="delete from projects where project_id=".$id.";";
+				$this->db->query($sql);
+			}
+		}
+		return false;
+	}
+
+	protected function studentSendDraft(int $user_id,int $project_id):bool{
+		throw new Exception("Not Implemented");
+		return false;
 	}
 
 	private function getProjectStudents(int $id):array{
 		$sql="select student_id,accepted from project_student where project_id=".$id.";";
-		$result=$db->query($sql);
+		$result=$this->db->query($sql);
 		if($result->num_rows>0){
 			$output=[];
 			while($row=$result->fetch_assoc()){
@@ -102,7 +118,7 @@ class DB extends Database{
 	}
 	protected function getProjectByID(int $id):?DBProject{
 		$sql="select project_id,name,description,teacher_id,status from projects where id=".$id.";";
-		$result=$db->query($sql);
+		$result=$this->db->query($sql);
 		if($result->num_rows>0){
 			$data=$result->fetch_assoc();
 			return new DBProject(getProjectStudents($data['project_id']),$data['project_id'],$data['teacher_id'],$data['name'],$data['description'],$data['status']);
@@ -113,7 +129,7 @@ class DB extends Database{
 	protected function getStudentProjects(int $id):array{
 		//$sql="select project_id,accepted from project_student where student_id=".$id.";";
 		$sql="select ps.accepted,p.project_id,p.name,p.description,p.teacher_id,p.status from project_student as ps inner join projects as p on ps.project_id=p.project_id where ps.student_id=".$id.";";
-		$result=$db->query($sql);
+		$result=$this->db->query($sql);
 		if($result->num_rows>0){
 			$output=[];
 			while($row=$result->fetch_assoc()){
@@ -126,7 +142,7 @@ class DB extends Database{
 
 	protected function getTeacherProjects(int $id):array{
 		$sql="select project_id,name,description,teacher_id,status from projects where teacher_id=".$id.";";
-		$result=$db->query($sql);
+		$result=$this->db->query($sql);
 		if($result->num_rows>0){
 			$output=[];
 			while($row=$result->fetch_assoc()){
