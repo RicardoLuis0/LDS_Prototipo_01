@@ -1,5 +1,5 @@
 <?php
-require_once("database/classes.php");
+require_once("inc/database/classes.php");
 require_once("inc/session_setup.php");
 
 class ProjectProposalData{//dados necessarios para proposta de projeto
