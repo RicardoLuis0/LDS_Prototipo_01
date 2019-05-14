@@ -20,6 +20,8 @@ abstract class Database{
 	protected abstract function getTeacherProjects(int $id):array;
 	protected abstract function studentAcceptProject(int $user_id,int $project_id):bool;
 	protected abstract function teacherAcceptProject(int $user_id,int $project_id):bool;
+	protected abstract function studentRejectProject(int $user_id,int $project_id):bool;
+	protected abstract function teacherRejectProject(int $user_id,int $project_id):bool;
 //---
 	public function __construct(){
 		$this->connected=false;

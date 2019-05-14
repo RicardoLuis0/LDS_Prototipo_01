@@ -81,7 +81,7 @@ class DB extends Database{
 
 	protected function activateUser(string $login,string $password):bool{
 		$sql="update users set hash='".password_hash($password,PASSWORD_DEFAULT)."',account_activated=true where login='$login';";
-		return ($this->db->query($sql)===true);
+		return ($this->db->query($sql)>0);
 	}
 
 	protected function addProject(DBProjectAdd $proj):bool{
@@ -139,12 +139,20 @@ class DB extends Database{
 
 	protected function studentAcceptProject(int $user_id,int $project_id):bool{
 		$sql="update project_student set accepted=true where student_id=".$user_id." and project_id=".$project_id.";";
-		return ($this->db->query($sql)===true);
+		return ($this->db->query($sql)>0);
 	}
 
 	protected function teacherAcceptProject(int $user_id,int $project_id):bool{
 		$sql="update projects set status='Accepted' where teacher_id=".$user_id." and project_id=".$project_id." and status='Pending';";
-		return ($this->db->query($sql)===true);
+		return ($this->db->query($sql)>0);
+	}
+	protected function studentRejectProject(int $user_id,int $project_id):bool{
+		$sql="delete from project_student where student_id=".$user_id." and project_id=".$project_id.";";
+		return ($this->db->query($sql)>0);
+	}
+	protected function teacherRejectProject(int $user_id,int $project_id):bool{
+		$sql="update projects set status='Rejected' where teacher_id=".$user_id." and project_id=".$project_id." and status='Pending';";
+		return ($this->db->query($sql)>0);
 	}
 }
 ?>
