@@ -1,6 +1,6 @@
 <?php
 require_once("database/classes.php");
-require_once("session_setup.php");
+require_once("inc/session_setup.php");
 
 class ProjectProposalData{//dados necessarios para proposta de projeto
 
@@ -14,18 +14,21 @@ abstract class Database{
 	protected $connected;
 	public abstract function connect():void;
 	public abstract function disconnect():void;
+//user
 	protected abstract function getUserByID(int $id):?DBUser;//returns found user
 	protected abstract function getUserByLogin(string $login):?DBUser;//returns found user
 	protected abstract function activateUser(string $login,string $password):bool;
 	protected abstract function changeEmail(string $login,string $new_email):bool;
 	protected abstract function addUser(DBUserAdd $data):?string;//returns activation key
 	protected abstract function regenKey(string $login):?string;//regenerate activation key, returns null if user is inexistent or already activated
-	/*
+//project
 	protected abstract function addProject(DBProjectAdd $proj):bool;
 	protected abstract function getProjectByID(int $id):?DBProject;
-	protected abstract function getUserProjects(int $user_id):?array;
-	protected abstract function acceptProject(int $id):bool;
-	*/
+	protected abstract function getStudentProjects(int $id):array;
+	protected abstract function getTeacherProjects(int $id):array;
+	protected abstract function studentAcceptProject(int $user_id,int $project_id):bool;
+	protected abstract function teacherAcceptProject(int $user_id,int $project_id):bool;
+//---
 	public function __construct(){
 		$this->connected=false;
 	}

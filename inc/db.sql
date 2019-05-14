@@ -18,16 +18,42 @@ create table users (
 
 create table projects (
 	project_id int not null auto_increment,
-	constraint pk_project_id primary key (project_id)
+	name varchar(100),
+	description varchar(400),
+	teacher_id int not null,
+	status enum('Pending','Working','Finished','Cancelled') not null default 'Pending',
+	constraint pk_project_id primary key (project_id),
+	constraint fk_project_teacher foreign key (teacher_id) references users(user_id)
 );
 
-create table projects_users (
+create table project_student (
 	project_id int not null,
-	user_id int not null,
+	student_id int not null,
 	accepted boolean not null default false,
-	constraint pk_projects_users primary key (project_id,user_id),
-	constraint fk_project_id foreign key (project_id) references projects(project_id),
-	constraint fk_user_id foreign key (user_id) references users(user_id)
+	constraint pk_project_student primary key (project_id,student_id),
+	constraint fk_project_student_project_id foreign key (project_id) references projects(project_id),
+	constraint fk_project_student_user_id foreign key (student_id) references users(user_id)
+);
+
+create table messages (
+	message_id int not null auto_increment,
+	project_id int not null,
+	from_id int not null,
+	message varchar(100) not null,
+	constraint pk_message primary key (message_id),
+	constraint fk_message_project foreign key (project_id) references projects(project_id),
+	constraint fk_message_from foreign key (from_id) references users(user_id)
+);
+
+create table private_message (
+	pm_id int not null auto_increment,
+	from_id int not null,
+	to_id int not null,
+	subject varchar(100) not null,
+	content varchar(400) not null,
+	constraint pk_pm primary key (pm_id),
+	constraint fk_pm_from foreign key (from_id) references users(user_id),
+	constraint fk_pm_to foreign key (to_id) references users(user_id)
 );
 
 insert into users (account_activated, login, name, hash, account_type, email) values (true, 'admin', 'Administrador','$2y$10$QR.sNaP9wHh/Ofiti9Ml6.ncfzKnnt0fIHukHAoahwpxPxTWyTDnK', 'Admin', 'ricolvs123@gmail.com');
