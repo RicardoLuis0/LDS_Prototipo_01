@@ -2,14 +2,6 @@
 require_once("inc/database/classes.php");
 require_once("inc/session_setup.php");
 
-class ProjectProposalData{//dados necessarios para proposta de projeto
-
-}
-
-class ProjectIDData{//dados de identificacao do projeto
-
-}
-
 abstract class Database{
 	protected $connected;
 	public abstract function connect():void;
