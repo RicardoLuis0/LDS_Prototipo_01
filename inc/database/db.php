@@ -70,11 +70,13 @@ class DB extends Database{
 	}
 
 	protected function changeEmail(string $login,string $new_email):bool{
+		//TODO
 		throw new Exception("Not implemented");
 		return false;
 	}
 
 	protected function regenKey(string $login):?string{
+		//TODO
 		throw new Exception("Not implemented");
 		return null;
 	}
