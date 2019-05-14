@@ -25,7 +25,7 @@ class DBUserAdd{
 		return $this->account_type;
 	}
 
-	public function getEMail(){
+	public function getEMail():string{
 		return $this->email;
 	}
 }
