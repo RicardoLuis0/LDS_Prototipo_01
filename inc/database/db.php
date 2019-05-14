@@ -85,7 +85,7 @@ class DB extends Database{
 	}
 
 	protected function addProject(DBProjectAdd $proj):bool{
-
+		//TODO
 	}
 
 	private function getProjectStudents(int $id):array{
