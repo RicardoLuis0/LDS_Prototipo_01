@@ -1,4 +1,6 @@
 <?php
+use Database\DB,
+    Mail\Mailer;
 if(isset($_POST["user"])&&strlen($_POST["user"])>0){
     if(isset($_POST['email'])&&strlen($_POST["email"])>0){
         if(isset($_POST["name"])&&strlen($_POST["name"])>0){
@@ -8,7 +10,7 @@ if(isset($_POST["user"])&&strlen($_POST["user"])>0){
                     $login=$_POST["user"];
                     $name=$_POST["name"];
                     $email=$_POST['email'];
-                    $db=getDatabase();
+                    $db=new DB();
                     $db->connect();
                     $key=$db->registerUser($login,$name,$type,$email);
                     if($key!=null){

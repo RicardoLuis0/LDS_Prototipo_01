@@ -1,5 +1,11 @@
 <?php
-require_once("inc/access_control.php");
+use Session\Session,
+    Pages\AccessControl;
+
+require_once('inc/autoload.php');
+
+Session::initSession();
+
 AccessControl::requireType("Student");
 $id="projects";
 $title_name="Meus Projetos";

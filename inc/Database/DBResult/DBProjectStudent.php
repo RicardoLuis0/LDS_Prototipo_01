@@ -1,4 +1,5 @@
 <?php
+namespace Database\DBResult;
 class DBProjectStudent{
     private $student_id;
     private $project_id;

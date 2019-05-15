@@ -1,8 +1,9 @@
 <?php
-require_once("inc/get_database.php");
+use Database\DB,
+    Session\Session;
 if(isset($_POST["user"])){
     if(isset($_POST["pass"])){
-        $db=getDatabase();
+        $db=new DB();
         $db->connect();
         $data=$db->checkLogin($_POST["user"],$_POST["pass"]);
         if($data!=null){

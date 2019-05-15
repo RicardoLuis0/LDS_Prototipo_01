@@ -1,5 +1,10 @@
 <?php
-require_once("inc/session_setup.php");
+use Session\Session;
+
+require_once('inc/autoload.php');
+
+Session::initSession();
+
 $id=-1;
 if(isset($_SESSION["401_message"])){
 	$title_name="Acesso não Autorizado";

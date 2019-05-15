@@ -1,5 +1,5 @@
 <?php
-	require_once("inc/session_setup.php");
+	use Session\Session;
 	if(!isset($body_class)||gettype($body_class)!=="string")$body_class="";
 	if(!isset($title_name)||gettype($title_name)!=="string")$title_name="";
 	if(!isset($css_files)||!is_array($css_files))$css_files=array();

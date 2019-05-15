@@ -1,6 +1,6 @@
 <?php
-//require_once("user_data.php");
 namespace Session;
+use Session\UserData;
 class Session{
     public static function do403Error(string $message,bool $absolute_message=false){
         $_SESSION['403_message_absolute']=$absolute_message;
@@ -45,6 +45,4 @@ class Session{
         }
     }
 }
-//autoinit
-Session::initSession();
 ?>

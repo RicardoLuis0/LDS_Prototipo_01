@@ -1,7 +1,11 @@
 <?php
-require_once("inc/access_control.php");
-require_once('inc/mail/mail.php');
-require_once("inc/get_database.php");
+use Session\Session,
+    Pages\AccessControl;
+
+require_once('inc/autoload.php');
+
+Session::initSession();
+
 AccessControl::requireType("Admin");
 if(isset($_POST["proccess"])&&$_POST["proccess"]){
 	include("inc/pages/register/register_proccess.php");

@@ -1,4 +1,5 @@
 <?php
+namespace Session;
 class UserData{
     private $id;
     private $accountType;

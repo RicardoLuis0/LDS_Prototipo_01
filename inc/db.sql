@@ -30,6 +30,7 @@ create table project_student (
 	project_id int not null,
 	student_id int not null,
 	accepted boolean not null default false,
+	manager boolean not null default false,
 	constraint pk_project_student primary key (project_id,student_id),
 	constraint fk_project_student_project_id foreign key (project_id) references projects(project_id),
 	constraint fk_project_student_user_id foreign key (student_id) references users(user_id)
