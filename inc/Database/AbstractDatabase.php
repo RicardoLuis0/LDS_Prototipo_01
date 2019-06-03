@@ -17,22 +17,22 @@ abstract class AbstractDatabase{
 //user
 	protected abstract function getUserByID(int $id):?DBUser;//returns found user
 	protected abstract function getUserByLogin(string $login):?DBUser;//returns found user
-	protected abstract function activateUser(string $login,string $password):bool;
-	protected abstract function changeEmail(string $login,string $new_email):bool;
+	protected abstract function activateUser(string $login,string $password):bool;//activate user account
+	protected abstract function changeEmail(string $login,string $new_email):bool;//change user email
 	protected abstract function addUser(DBUserAdd $data):?string;//returns activation key
 	protected abstract function regenKey(string $login):?string;//regenerate activation key, returns null if user is inexistent or already activated
 //project
 	protected abstract function addProject(DBProjectAdd $proj):bool;
-	protected abstract function studentSendDraft(int $user_id,int $project_id):bool;
-	protected abstract function studentMakeDraft(int $user_id,int $project_id):bool;
+	protected abstract function studentSendDraft(int $user_id,int $project_id):bool;//send draft to teacher as proposal
+	protected abstract function studentMakeDraft(int $user_id,int $project_id):bool;//turn proposal/rejection into draft
 	protected abstract function modifyDraft(int $id,?string $name,?string $desc,?int $teacher):bool;
 	protected abstract function getProjectByID(int $id):?DBProject;
 	protected abstract function getStudentProjects(int $id):array;
 	protected abstract function getTeacherProjects(int $id):array;
-	protected abstract function studentAcceptProject(int $user_id,int $project_id):bool;
-	protected abstract function teacherAcceptProject(int $user_id,int $project_id):bool;
-	protected abstract function studentRejectProject(int $user_id,int $project_id):bool;
-	protected abstract function teacherRejectProject(int $user_id,int $project_id):bool;
+	protected abstract function studentAcceptProject(int $user_id,int $project_id):bool;//accept project invitation
+	protected abstract function teacherAcceptProject(int $user_id,int $project_id):bool;//accept project proposal
+	protected abstract function studentRejectProject(int $user_id,int $project_id):bool;//reject project invitation/leave project
+	protected abstract function teacherRejectProject(int $user_id,int $project_id):bool;//reject project proposal
 //---
 	public function __construct(){
 		$this->connected=false;
@@ -126,11 +126,11 @@ abstract class AbstractDatabase{
 		}
 	}
 
-	public function modifyProjectDraft(int $project_id,?string $new_description,?string $new_name):bool{
+	public function modifyProjectDraft(int $project_id,?string $new_description,?string $new_name,?int $teacher_id):bool{
 		if(!$this->isConnected()){
 			return false;
 		}
-		return false;
+		return modifyDraft($project_id,$new_description,$new_name,$teacher_id);
 	}
 	/*
 	public function acceptProjectProposal(???):bool{

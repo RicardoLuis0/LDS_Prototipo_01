@@ -78,9 +78,8 @@ class DB extends AbstractDatabase{
 	}
 
 	protected function changeEmail(string $login,string $new_email):bool{
-		//TODO
-		throw new Exception("Not implemented");
-		return false;
+		$sql="update users set email='".$new_email."' where login='$login';";
+		return ($this->db->query($sql)>0);
 	}
 
 	protected function regenKey(string $login):?string{
@@ -110,11 +109,21 @@ class DB extends AbstractDatabase{
 	}
 
 	protected function studentSendDraft(int $user_id,int $project_id):bool{
-		throw new Exception("Not Implemented");
+		$sql="select manager from project_student where project_id = ".$project_id." and student_id = ".$user_id.";";
+		$result=$this->db->query($sql);
+		if($result->num_rows>0&&$result->fetch_assoc()['manager']==true){
+			$sql="update projects set status='Pending' where project_id = ".$project_id." and status = 'Draft';";
+			return ($this->db->query($sql)>0);
+		}
 		return false;
 	}
 	protected function studentMakeDraft(int $user_id,int $project_id):bool{
-		throw new Exception("Not Implemented");
+		$sql="select manager from project_student where project_id = ".$project_id." and student_id = ".$user_id.";";
+		$result=$this->db->query($sql);
+		if($result->num_rows>0&&$result->fetch_assoc()['manager']==true){
+			$sql="update projects set status='Draft' where project_id = ".$project_id." and ( status = 'Pending' or status = 'Rejected' );";
+			return ($this->db->query($sql)>0);
+		}
 		return false;
 	}
 

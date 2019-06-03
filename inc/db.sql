@@ -21,7 +21,7 @@ create table projects (
 	name varchar(100),
 	description varchar(400),
 	teacher_id int not null,
-	status enum('Draft','Pending','Working','Finished','Cancelled','Rejected') not null default 'Draft',
+	status enum('Draft','Pending','Accepted','Finished','Cancelled','Rejected') not null default 'Draft',
 	constraint pk_project_id primary key (project_id),
 	constraint fk_project_teacher foreign key (teacher_id) references users(user_id)
 );
