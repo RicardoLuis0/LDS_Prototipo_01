@@ -7,8 +7,9 @@ require_once('inc/autoload.php');
 Session::initSession();
 
 AccessControl::requireType("Student");
-
-if(isset($_POST['ajax'])){
+if(isset($_POST['proccess'])){
+    include("inc/pages/projects/new_project_proccess.php");
+}else if(isset($_POST['ajax'])){
     include("inc/pages/projects/new_project_ajax.php");
 }else{
     $id="projects";
