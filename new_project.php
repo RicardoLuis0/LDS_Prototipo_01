@@ -1,7 +1,6 @@
 <?php
 use Session\Session,
-    Pages\AccessControl,
-    Database\DB;
+    Pages\AccessControl;
 
 require_once('inc/autoload.php');
 
@@ -9,17 +8,8 @@ Session::initSession();
 
 AccessControl::requireType("Student");
 
-if(isset($_POST['teacher_id_ajax'])){
-    if(isset($_POST['q'])){
-        $db=new DB();
-        $db->connect();
-        $arr=$db->searchTeachers($_POST['q']);
-        if($arr){
-            echo(json_encode($arr));
-        }else{
-            echo("<center><p>Nenhum Resultado</p></center>");
-        }
-    }
+if(isset($_POST['ajax'])){
+    include("inc/pages/projects/new_project_ajax.php");
 }else{
     $id="projects";
     $title_name="Novo Projeto";

@@ -36,6 +36,9 @@
 
     function open_modal(){
         if(modal===null)modal=document.getElementById("modal_id");
+        if(search_input===null)search_input=document.getElementById("modal_searchinput");
+        search_input.value="";
+        modal_search();
         modal.style.display="block";
     }
 
@@ -71,7 +74,7 @@
             }else{
                 search_results.innerHTML="";
             }
-        },"teacher_id_ajax&q="+encoded_input)){
+        },"ajax=teacher_id&q="+encoded_input)){
             search_button.disabled=false;
             search_results.innerHTML="";
         }
@@ -88,11 +91,12 @@
     </div>
 </div>
 <div class=formwrapper>
-    <form>
+    <form method=POST>
         <p><label for="title_input">Título: </label><input id="title_input" type=text name="title"></p>
         <p><label for="desc_input">Descrição: </label><textarea id="desc_input" name="description" cols="40" rows="5"></textarea></p>
         <p><span id="teacher_label">Nenhum Orientador Selecionado</span> <button type="button" onclick="open_modal();" >Selecionar Orientador</button></p>
         <p><input type=submit></p>
+        <input type=hidden name="proccess">
         <input type="hidden" id="teacher_id" name="teacher_id">
     </form>
 </div>
