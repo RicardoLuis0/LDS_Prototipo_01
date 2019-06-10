@@ -110,9 +110,20 @@ div.modal_content div.searchresult{
 div.modal_content div.searchresult ul {
 	list-style-type:none;
 	height:50%px;
+	padding-left:0;
+}
+
+div.modal_content div.searchresult ul li {
+	display:flex;
+	border-bottom: 1px solid #ccc;
+}
+
+div.modal_content div.searchresult ul li button {
+	margin-left: auto;
 }
 
 /*modal from https://www.w3schools.com/howto/howto_css_modals.asp */
+
 div.modal {
 	display: none;
 	position: fixed;

@@ -111,7 +111,7 @@ abstract class AbstractDatabase{
 	}
 	
 	public function searchTeachers(string $terms):array{
-		return array();
+		return [["teacher_1",1],["teacher_2",2]];//TODO
 	}
 
 	public function registerProjectDraft(int $teacher_id,string $project_name,string $project_description):bool{

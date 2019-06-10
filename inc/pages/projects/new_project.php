@@ -17,7 +17,17 @@
     var search_input=null;
     var search_button=null;
     var search_results=null;
-
+    var teacher_label=null;
+    var teacher_id=null;
+    
+    function set_teacher(label,id){
+        if(teacher_id===null)teacher_id=document.getElementById("teacher_id");
+        if(teacher_label===null)teacher_label=document.getElementById("teacher_label");
+        teacher_id.value=id;
+        teacher_label.innerHTML=label;
+        close_modal();
+    }
+    
     window.onclick = function(event) {
         if (event.target == modal) {
             close_modal();
@@ -42,7 +52,18 @@
         if(!sendHttpPost("new_project.php",function(){
             search_button.disabled=false;
             if (this.readyState == 4) {
-                search_results.innerHTML=this.responseText;
+                var output=JSON.parse(this.responseText);
+                if(Array.isArray(output)){
+                    var html="";
+                    for(var i=0;i<output.length;i++){
+                        if(Array.isArray(output[i])){
+                            html+="<li>"+output[i][0]+"<button onclick=\"set_teacher('"+output[i][0]+"',"+output[i][1]+")\">&#x271A</button></li>";
+                        }
+                    }
+                    search_results.innerHTML=html;
+                }else{
+                    search_results.innerHTML=this.responseText;
+                }
             }else{
                 search_results.innerHTML="";
             }
@@ -67,8 +88,8 @@
     <form>
         <p><input type=text name="title"></p>
         <p><textarea name="description" cols="40" rows="5"></textarea></p>
-        <p><span id="orientador">Nenhum Orientador Selecionado</span> <button type="button" onclick="open_modal();" >Selecionar Orientador</button></p>
+        <p><span id="teacher_label">Nenhum Orientador Selecionado</span> <button type="button" onclick="open_modal();" >Selecionar Orientador</button></p>
         <p><input type=submit></p>
-        <input type="hidden" name="teacher_id">
+        <input type="hidden" id="teacher_id" name="teacher_id">
     </form>
 </div>
