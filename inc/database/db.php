@@ -215,7 +215,7 @@ class DB extends AbstractDatabase{
 		$sql.=";";
 		$result=$this->db->query($sql);
 		if($result->num_rows>0){
-			return $result->fech_all(MYSQLI_NUM);
+			return $result->fetch_all(MYSQLI_NUM);
 		}else{
 			return null;
 		}
