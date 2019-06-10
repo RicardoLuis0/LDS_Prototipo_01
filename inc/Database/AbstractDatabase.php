@@ -109,6 +109,10 @@ abstract class AbstractDatabase{
 			return $key;
 		}
 	}
+	
+	public function searchTeachers(string $terms):array{
+		return array();
+	}
 
 	public function registerProjectDraft(int $teacher_id,string $project_name,string $project_description):bool{
 		if($this->isConnected()&&Session::isLoggedIn()){
