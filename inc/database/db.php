@@ -206,5 +206,19 @@ class DB extends AbstractDatabase{
 			return false;
 		}
 	}
+	
+	protected function searchUsersTeachers(array $q):?array{
+		$sql="select name,user_id from users where account_activated = true and account_type = 'Teacher' ";
+		foreach($q as $st){
+			$sql.="and name like \"%".$st."%\" ";
+		}
+		$sql.=";";
+		$result=$this->db->query($sql);
+		if($result->num_rows>0){
+			return $result->fech_all(MYSQLI_NUM);
+		}else{
+			return null;
+		}
+	}
 }
 ?>

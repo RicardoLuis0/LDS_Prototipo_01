@@ -21,6 +21,7 @@ abstract class AbstractDatabase{
 	protected abstract function changeEmail(string $login,string $new_email):bool;//change user email
 	protected abstract function addUser(DBUserAdd $data):?string;//returns activation key
 	protected abstract function regenKey(string $login):?string;//regenerate activation key, returns null if user is inexistent or already activated
+	protected abstract function searchUsersTeachers(array $q):?array;
 //project
 	protected abstract function addProject(DBProjectAdd $proj):bool;
 	protected abstract function studentSendDraft(int $user_id,int $project_id):bool;//send draft to teacher as proposal
@@ -110,8 +111,12 @@ abstract class AbstractDatabase{
 		}
 	}
 	
-	public function searchTeachers(string $terms):array{
-		return [["teacher_1",1],["teacher_2",2]];//TODO
+	public function searchTeachers(string $terms):?array{
+		if(!$this->isConnected()){
+			return null;
+		}
+		$arr=explode(" ",$terms);
+		return $this->searchUsersTeachers($arr);
 	}
 
 	public function registerProjectDraft(int $teacher_id,string $project_name,string $project_description):bool{

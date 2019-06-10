@@ -52,16 +52,20 @@
         if(!sendHttpPost("new_project.php",function(){
             search_button.disabled=false;
             if (this.readyState == 4) {
-                var output=JSON.parse(this.responseText);
-                if(Array.isArray(output)){
-                    var html="";
-                    for(var i=0;i<output.length;i++){
-                        if(Array.isArray(output[i])){
-                            html+="<li>"+output[i][0]+"<button onclick=\"set_teacher('"+output[i][0]+"',"+output[i][1]+")\">&#x271A</button></li>";
+                try{
+                    var output=JSON.parse(this.responseText);
+                    if(Array.isArray(output)){
+                        var html="";
+                        for(var i=0;i<output.length;i++){
+                            if(Array.isArray(output[i])){
+                                html+="<li>"+output[i][0]+"<button onclick=\"set_teacher('"+output[i][0]+"',"+output[i][1]+")\">&#x271A</button></li>";
+                            }
                         }
+                        search_results.innerHTML=html;
+                    }else{
+                        search_results.innerHTML=this.responseText;
                     }
-                    search_results.innerHTML=html;
-                }else{
+                }catch(e){
                     search_results.innerHTML=this.responseText;
                 }
             }else{

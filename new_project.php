@@ -13,7 +13,12 @@ if(isset($_POST['teacher_id_ajax'])){
     if(isset($_POST['q'])){
         $db=new DB();
         $db->connect();
-        echo(json_encode($db->searchTeachers($_POST['q'])));
+        $arr=$db->searchTeachers($_POST['q']);
+        if($arr){
+            echo(json_encode($arr));
+        }else{
+            echo("<center><p>Nenhum Resultado</p></center>");
+        }
     }
 }else{
     $id="projects";
