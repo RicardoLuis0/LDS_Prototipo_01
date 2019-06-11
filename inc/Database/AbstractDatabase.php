@@ -121,7 +121,7 @@ abstract class AbstractDatabase{
 
 	public function registerProjectDraft(int $teacher_id,string $project_name,string $project_description):bool{
 		if($this->isConnected()&&Session::isLoggedIn()){
-			return addProject(new DBProjectAdd(Session::getUserData()->getId(),$teacher_id,$project_name,$project_description));
+			return $this->addProject(new DBProjectAdd(Session::getUserData()->getId(),$teacher_id,$project_name,$project_description));
 		}else{
 			return false;
 		}
@@ -140,6 +140,13 @@ abstract class AbstractDatabase{
 			return false;
 		}
 		return modifyDraft($project_id,$new_description,$new_name,$teacher_id);
+	}
+
+	public function getAllStudentProjects():?array{
+		if(!$this->isConnected()){
+			return null;
+		}
+		return $this->getStudentProjects(Session::getUserData()->getId());
 	}
 	/*
 	public function acceptProjectProposal(???):bool{
