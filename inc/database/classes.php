@@ -1,4 +1,0 @@
-<?php
-require_once("classes/user.php");
-require_once("classes/project.php");
-require_once("classes/project_student.php");

@@ -1,9 +1,17 @@
 <?php
-require_once('inc/database/abstract_database.php');
-require_once("inc/random/rand_string.php");
-class DB extends Database{
-	private $db=null;
 //TODO prevent sql injection
+namespace Database;
+use \mysqli,
+	Database\AbstractDatabase,
+	Random\RandomString,
+	Database\DBResult\DBUser,
+	Database\DBResult\DBUserAdd,
+	Database\DBResult\DBProject,
+	Database\DBResult\DBProjectAdd,
+	Database\DBResult\DBStudentProject,
+	Database\DBResult\DBProjectStudent;
+class DB extends AbstractDatabase{
+	private $db=null;
 	public function connect():void{
 		$host="localhost";
 		$username="root";
@@ -53,7 +61,7 @@ class DB extends Database{
 	}
 
 	private function generateKey():string{
-		return randomString(60);
+		return RandomString::get(60);
 	}
 
 	private function getAddUserValues(DBUserAdd $data,string $key):string{
@@ -70,9 +78,8 @@ class DB extends Database{
 	}
 
 	protected function changeEmail(string $login,string $new_email):bool{
-		//TODO
-		throw new Exception("Not implemented");
-		return false;
+		$sql="update users set email='".$new_email."' where login='$login';";
+		return ($this->db->query($sql)>0);
 	}
 
 	protected function regenKey(string $login):?string{
@@ -86,11 +93,11 @@ class DB extends Database{
 		return ($this->db->query($sql)>0);
 	}
 
-	protected function addProject(DBProjectAdd $proj,bool $draft):bool{
-		$sql="insert into projects (name,description,teacher_id,status) values (".$proj->getProjectName().",".$proj->getProjectDescription().",".$proj->getTeacherId().",'".($draft?"Draft":"Pending")."');";
+	protected function addProject(DBProjectAdd $proj):bool{
+		$sql="insert into projects (name,description,teacher_id) values ('".$proj->getProjectName()."','".$proj->getProjectDescription()."',".$proj->getTeacherId().");";
 		if($this->db->query($sql)>0){
-			$id=$this->db->last_id;
-			$sql="insert into project_student (project_id,student_id) values (".$id.",".$proj->getStudentId().");";
+			$id=$this->db->insert_id;
+			$sql="insert into project_student (project_id,student_id,manager) values (".$id.",".$proj->getStudentId().",true);";
 			if($this->db->query($sql)>0){
 				return true;
 			}else{
@@ -102,17 +109,31 @@ class DB extends Database{
 	}
 
 	protected function studentSendDraft(int $user_id,int $project_id):bool{
-		throw new Exception("Not Implemented");
+		$sql="select manager from project_student where project_id = ".$project_id." and student_id = ".$user_id.";";
+		$result=$this->db->query($sql);
+		if($result->num_rows>0&&$result->fetch_assoc()['manager']==true){
+			$sql="update projects set status='Pending' where project_id = ".$project_id." and status = 'Draft';";
+			return ($this->db->query($sql)>0);
+		}
+		return false;
+	}
+	protected function studentMakeDraft(int $user_id,int $project_id):bool{
+		$sql="select manager from project_student where project_id = ".$project_id." and student_id = ".$user_id.";";
+		$result=$this->db->query($sql);
+		if($result->num_rows>0&&$result->fetch_assoc()['manager']==true){
+			$sql="update projects set status='Draft' where project_id = ".$project_id." and ( status = 'Pending' or status = 'Rejected' );";
+			return ($this->db->query($sql)>0);
+		}
 		return false;
 	}
 
 	private function getProjectStudents(int $id):array{
-		$sql="select student_id,accepted from project_student where project_id=".$id.";";
+		$sql="select student_id,accepted,manager from project_student where project_id=".$id.";";
 		$result=$this->db->query($sql);
 		if($result->num_rows>0){
 			$output=[];
 			while($row=$result->fetch_assoc()){
-				array_push($output,new DBProjectStudent($row['student_id'],$id,$row['accepted']));
+				array_push($output,new DBProjectStudent($row['student_id'],$id,$row['accepted'],$row['manager']));
 			}
 			return $output;
 		}
@@ -130,12 +151,12 @@ class DB extends Database{
 
 	protected function getStudentProjects(int $id):array{
 		//$sql="select project_id,accepted from project_student where student_id=".$id.";";
-		$sql="select ps.accepted,p.project_id,p.name,p.description,p.teacher_id,p.status from project_student as ps inner join projects as p on ps.project_id=p.project_id where ps.student_id=".$id.";";
+		$sql="select ps.accepted,ps.manager,p.project_id,p.name,p.description,p.teacher_id,p.status from project_student as ps inner join projects as p on ps.project_id=p.project_id where ps.student_id=".$id.";";
 		$result=$this->db->query($sql);
 		if($result->num_rows>0){
 			$output=[];
 			while($row=$result->fetch_assoc()){
-				array_push($output,new DBStudentProject(getProjectStudents($data['project_id']),$data['project_id'],$data['teacher_id'],$data['name'],$data['description'],$data['status'],$data['accepted']));
+				array_push($output,new DBStudentProject($this->getProjectStudents($row['project_id']),$row['project_id'],$row['teacher_id'],$row['name'],$row['description'],$row['status'],$row['accepted'],$row['manager']));
 			}
 			return $output;
 		}
@@ -171,6 +192,33 @@ class DB extends Database{
 	protected function teacherRejectProject(int $user_id,int $project_id):bool{
 		$sql="update projects set status='Rejected' where teacher_id=".$user_id." and project_id=".$project_id." and status='Pending';";
 		return ($this->db->query($sql)>0);
+	}
+
+	protected function modifyDraft(int $id,?string $name,?string $desc,?int $teacher):bool{
+		if($name||$desc||$teacher){
+			$sql="update projects set ";
+			if($name)$sql.="name = '".$name."'".(($desc||$teacher)?", ":" ");
+			if($desc)$sql.="description = '".$desc."'".($teacher?", ":" ");
+			if($teacher)$sql.="teacher_id = ".$teacher." ";
+			$sql.=" where project_id = ".$id." and status = 'Draft';";
+			return ($this->db->query($sql)>0);
+		}else{
+			return false;
+		}
+	}
+	
+	protected function searchUsersTeachers(array $q):?array{
+		$sql="select name,user_id from users where account_activated = true and account_type = 'Teacher' ";
+		foreach($q as $st){
+			$sql.="and name like \"%".$st."%\" ";
+		}
+		$sql.=";";
+		$result=$this->db->query($sql);
+		if($result->num_rows>0){
+			return $result->fetch_all(MYSQLI_NUM);
+		}else{
+			return null;
+		}
 	}
 }
 ?>

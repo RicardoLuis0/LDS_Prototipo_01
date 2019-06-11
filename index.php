@@ -1,7 +1,13 @@
 <?php
+use Session\Session;
+
+require_once('inc/autoload.php');
+
+Session::initSession();
+
 $id="index";
 $title_name="Index";
-require_once("inc/session_setup.php");
+
 include("inc/pages/top.php");
 include("inc/pages/nav/nav_generic.php");
 echo "<div class=maindiv>";

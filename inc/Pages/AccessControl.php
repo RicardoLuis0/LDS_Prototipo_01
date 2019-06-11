@@ -1,5 +1,6 @@
 <?php
-require_once("session_setup.php");
+namespace Pages;
+use Session\Session;
 class AccessControl{
     public static function requireTypes(array $types,bool $soft=false,string $soft_target="index.php"){
         if(Session::isLoggedIn()){
