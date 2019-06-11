@@ -9,9 +9,12 @@ if(isset($_POST['title'])&&$_POST['title']!=""){
             $teacher_id=$_POST['teacher_id'];
             $db=new DB();
             $db->connect();
-            $db->registerProjectDraft($teacher_id,$title,$desc);
-            header("Location:student_projects.php");
-            die();
+            if(!$db->registerProjectDraft($teacher_id,$title,$desc)){
+                $error="Não foi possível criar projeto";
+            }else{
+                header("Location:student_projects.php");
+                die();
+            }
         }else{
             $error="Faltando Orientador";
         }
