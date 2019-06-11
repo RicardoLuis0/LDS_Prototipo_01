@@ -4,8 +4,9 @@ class DBProjectStudent{
     private $student_id;
     private $project_id;
     private $accepted;
+    private $manager;
 
-    public function __construct(int $student_id,int $project_id,bool $accpted){
+    public function __construct(int $student_id,int $project_id,bool $accepted,bool $manager){
         $this->student_id=$student_id;
         $this->project_id=$project_id;
         $this->accepted=$accepted;

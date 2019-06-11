@@ -94,9 +94,9 @@ class DB extends AbstractDatabase{
 	}
 
 	protected function addProject(DBProjectAdd $proj):bool{
-		$sql="insert into projects (name,description,teacher_id) values (".$proj->getProjectName().",".$proj->getProjectDescription().",".$proj->getTeacherId().");";
+		$sql="insert into projects (name,description,teacher_id) values ('".$proj->getProjectName()."','".$proj->getProjectDescription()."',".$proj->getTeacherId().");";
 		if($this->db->query($sql)>0){
-			$id=$this->db->last_id;
+			$id=$this->db->insert_id;
 			$sql="insert into project_student (project_id,student_id,manager) values (".$id.",".$proj->getStudentId().",true);";
 			if($this->db->query($sql)>0){
 				return true;
@@ -128,12 +128,12 @@ class DB extends AbstractDatabase{
 	}
 
 	private function getProjectStudents(int $id):array{
-		$sql="select student_id,accepted from project_student where project_id=".$id.";";
+		$sql="select student_id,accepted,manager from project_student where project_id=".$id.";";
 		$result=$this->db->query($sql);
 		if($result->num_rows>0){
 			$output=[];
 			while($row=$result->fetch_assoc()){
-				array_push($output,new DBProjectStudent($row['student_id'],$id,$row['accepted']));
+				array_push($output,new DBProjectStudent($row['student_id'],$id,$row['accepted'],$row['manager']));
 			}
 			return $output;
 		}
@@ -151,12 +151,12 @@ class DB extends AbstractDatabase{
 
 	protected function getStudentProjects(int $id):array{
 		//$sql="select project_id,accepted from project_student where student_id=".$id.";";
-		$sql="select ps.accepted,p.project_id,p.name,p.description,p.teacher_id,p.status from project_student as ps inner join projects as p on ps.project_id=p.project_id where ps.student_id=".$id.";";
+		$sql="select ps.accepted,ps.manager,p.project_id,p.name,p.description,p.teacher_id,p.status from project_student as ps inner join projects as p on ps.project_id=p.project_id where ps.student_id=".$id.";";
 		$result=$this->db->query($sql);
 		if($result->num_rows>0){
 			$output=[];
 			while($row=$result->fetch_assoc()){
-				array_push($output,new DBStudentProject(getProjectStudents($data['project_id']),$data['project_id'],$data['teacher_id'],$data['name'],$data['description'],$data['status'],$data['accepted']));
+				array_push($output,new DBStudentProject($this->getProjectStudents($row['project_id']),$row['project_id'],$row['teacher_id'],$row['name'],$row['description'],$row['status'],$row['accepted'],$row['manager']));
 			}
 			return $output;
 		}
