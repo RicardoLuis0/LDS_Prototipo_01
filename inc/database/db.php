@@ -139,37 +139,37 @@ class DB extends AbstractDatabase{
 		}
 		return [];
 	}
-	protected function getProjectByID(int $id):?DBProject{
+	protected function getProjectByID(int $id,bool $get_students=false):?DBProject{
 		$sql="select project_id,name,description,teacher_id,status from projects where id=".$id.";";
 		$result=$this->db->query($sql);
 		if($result->num_rows>0){
 			$data=$result->fetch_assoc();
-			return new DBProject(getProjectStudents($data['project_id']),$data['project_id'],$data['teacher_id'],$data['name'],$data['description'],$data['status']);
+			return new DBProject($get_students?$this->getProjectStudents($data['project_id']):null,$data['project_id'],$data['teacher_id'],$data['name'],$data['description'],$data['status']);
 		}
 		return null;
 	}
 
-	protected function getStudentProjects(int $id):array{
+	protected function getStudentProjects(int $id,bool $get_students=false):array{
 		//$sql="select project_id,accepted from project_student where student_id=".$id.";";
 		$sql="select ps.accepted,ps.manager,p.project_id,p.name,p.description,p.teacher_id,p.status from project_student as ps inner join projects as p on ps.project_id=p.project_id where ps.student_id=".$id.";";
 		$result=$this->db->query($sql);
 		if($result->num_rows>0){
 			$output=[];
 			while($row=$result->fetch_assoc()){
-				array_push($output,new DBStudentProject($this->getProjectStudents($row['project_id']),$row['project_id'],$row['teacher_id'],$row['name'],$row['description'],$row['status'],$row['accepted'],$row['manager']));
+				array_push($output,new DBStudentProject($get_students?$this->getProjectStudents($row['project_id']):null,$row['project_id'],$row['teacher_id'],$row['name'],$row['description'],$row['status'],$row['accepted'],$row['manager']));
 			}
 			return $output;
 		}
 		return [];
 	}
 
-	protected function getTeacherProjects(int $id):array{
+	protected function getTeacherProjects(int $id,bool $get_students=false):array{
 		$sql="select project_id,name,description,teacher_id,status from projects where teacher_id=".$id.";";
 		$result=$this->db->query($sql);
 		if($result->num_rows>0){
 			$output=[];
 			while($row=$result->fetch_assoc()){
-				array_push($output,new DBProject(getProjectStudents($data['project_id']),$data['project_id'],$data['teacher_id'],$data['name'],$data['description'],$data['status']));
+				array_push($output,new DBProject($get_students?$this->getProjectStudents($data['project_id']):null,$data['project_id'],$data['teacher_id'],$data['name'],$data['description'],$data['status']));
 			}
 			return $output;
 		}

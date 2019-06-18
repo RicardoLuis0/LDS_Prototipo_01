@@ -7,7 +7,8 @@ class DBProject{
     private $project_name;
     private $project_description;
     private $project_status;
-    public function __construct(array $students,int $project_id,int $teacher_id,string $project_name,string $project_description,string $project_status){
+
+    public function __construct(?array $students,int $project_id,int $teacher_id,string $project_name,string $project_description,string $project_status){
         $this->students=$students;
         $this->project_id=$project_id;
         $this->teacher_id=$teacher_id;

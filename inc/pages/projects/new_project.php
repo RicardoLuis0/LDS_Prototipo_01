@@ -43,6 +43,7 @@
     }
 
     function close_modal(){
+        if(modal===null)modal=document.getElementById("modal_id");
         modal.style.display="none";
     }
 

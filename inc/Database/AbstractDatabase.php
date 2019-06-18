@@ -27,9 +27,9 @@ abstract class AbstractDatabase{
 	protected abstract function studentSendDraft(int $user_id,int $project_id):bool;//send draft to teacher as proposal
 	protected abstract function studentMakeDraft(int $user_id,int $project_id):bool;//turn proposal/rejection into draft
 	protected abstract function modifyDraft(int $id,?string $name,?string $desc,?int $teacher):bool;
-	protected abstract function getProjectByID(int $id):?DBProject;
-	protected abstract function getStudentProjects(int $id):array;
-	protected abstract function getTeacherProjects(int $id):array;
+	protected abstract function getProjectByID(int $id,bool $get_students=false):?DBProject;
+	protected abstract function getStudentProjects(int $id,bool $get_students=false):array;
+	protected abstract function getTeacherProjects(int $id,bool $get_students=false):array;
 	protected abstract function studentAcceptProject(int $user_id,int $project_id):bool;//accept project invitation
 	protected abstract function teacherAcceptProject(int $user_id,int $project_id):bool;//accept project proposal
 	protected abstract function studentRejectProject(int $user_id,int $project_id):bool;//reject project invitation/leave project
@@ -41,6 +41,13 @@ abstract class AbstractDatabase{
 
 	public function isConnected():bool{
 		return $this->connected;
+	}
+
+	public function getUserFromId(int $id):?DBUser{
+		if(!$this->isConnected()){
+			return null;
+		}
+		return $this->getUserByID($id);
 	}
 
 	public function checkActivationKey(string $login,string $key):bool{
@@ -109,6 +116,7 @@ abstract class AbstractDatabase{
 			}
 			return $key;
 		}
+		return null;
 	}
 	
 	public function searchTeachers(string $terms):?array{
@@ -127,7 +135,7 @@ abstract class AbstractDatabase{
 		}
 	}
 
-	public function sendProjectDraft(int $project_id){
+	public function sendProjectDraft(int $project_id):bool{
 		if($this->isConnected()&&Session::isLoggedIn()){
 			return $this->studentSendDraft(Session::getUserData()->getId(),$project_id);
 		}else{
@@ -139,14 +147,21 @@ abstract class AbstractDatabase{
 		if(!$this->isConnected()){
 			return false;
 		}
-		return modifyDraft($project_id,$new_description,$new_name,$teacher_id);
+		return $this->modifyDraft($project_id,$new_description,$new_name,$teacher_id);
 	}
 
-	public function getAllStudentProjects():?array{
+	public function getAllStudentProjects(bool $get_students=false):?array{
 		if(!$this->isConnected()){
 			return null;
 		}
-		return $this->getStudentProjects(Session::getUserData()->getId());
+		return $this->getStudentProjects(Session::getUserData()->getId(),$get_students);
+	}
+
+	public function getProject(int $id,bool $get_students=false):?DBProject{
+		if(!$this->isConnected()){
+			return null;
+		}
+		return $this->getProjectByID($id,$get_students);
 	}
 	/*
 	public function acceptProjectProposal(???):bool{
