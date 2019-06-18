@@ -56,6 +56,7 @@ class DB extends AbstractDatabase{
 	}
 
 	protected function getUserByLogin(string $login):?DBUser{
+		$login=$this->db->real_escape_string($login);
 		$conditions="login='".$login."'";
 		return $this->getUser($conditions);
 	}
@@ -69,6 +70,7 @@ class DB extends AbstractDatabase{
 	}
 
 	protected function addUser(DBUserAdd $data):?string{
+		$data->escape($this->db);
 		$key=$this->generateKey();
 		$sql="insert into users(login,name,hash,account_type,email) values (".$this->getAddUserValues($data,$key).");";
 		if($this->db->query($sql)>0){
@@ -78,22 +80,28 @@ class DB extends AbstractDatabase{
 	}
 
 	protected function changeEmail(string $login,string $new_email):bool{
+		$login=$this->db->real_escape_string($login);
+		$new_email=$this->db->real_escape_string($new_email);
 		$sql="update users set email='".$new_email."' where login='$login';";
 		return ($this->db->query($sql)>0);
 	}
 
 	protected function regenKey(string $login):?string{
+		$login=$this->db->real_escape_string($login);
 		//TODO
 		throw new Exception("Not implemented");
 		return null;
 	}
 
 	protected function activateUser(string $login,string $password):bool{
+		$login=$this->db->real_escape_string($login);
+		$password=$this->db->real_escape_string($password);
 		$sql="update users set hash='".password_hash($password,PASSWORD_DEFAULT)."',account_activated=true where login='$login';";
 		return ($this->db->query($sql)>0);
 	}
 
 	protected function addProject(DBProjectAdd $proj):bool{
+		$proj->escape($this->db);
 		$sql="insert into projects (name,description,teacher_id) values ('".$proj->getProjectName()."','".$proj->getProjectDescription()."',".$proj->getTeacherId().");";
 		if($this->db->query($sql)>0){
 			$id=$this->db->insert_id;
@@ -197,9 +205,15 @@ class DB extends AbstractDatabase{
 	protected function modifyDraft(int $id,?string $name,?string $desc,?int $teacher):bool{
 		if($name||$desc||$teacher){
 			$sql="update projects set ";
-			if($name)$sql.="name = '".$name."'".(($desc||$teacher)?", ":" ");
-			if($desc)$sql.="description = '".$desc."'".($teacher?", ":" ");
-			if($teacher)$sql.="teacher_id = ".$teacher." ";
+			if($name){
+				$sql.="name = '".$this->db->real_escape_string($name)."'".(($desc||$teacher)?", ":" ");
+			}
+			if($desc){
+				$sql.="description = '".$this->db->real_escape_string($desc)."'".($teacher?", ":" ");
+			}
+			if($teacher){
+				$sql.="teacher_id = ".$teacher." ";
+			}
 			$sql.=" where project_id = ".$id." and status = 'Draft';";
 			return ($this->db->query($sql)>0);
 		}else{
@@ -210,7 +224,7 @@ class DB extends AbstractDatabase{
 	protected function searchUsersTeachers(array $q):?array{
 		$sql="select name,user_id from users where account_activated = true and account_type = 'Teacher' ";
 		foreach($q as $st){
-			$sql.="and name like \"%".$st."%\" ";
+			$sql.="and name like \"%".$this->db->real_escape_string($st)."%\" ";
 		}
 		$sql.=";";
 		$result=$this->db->query($sql);

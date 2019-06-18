@@ -5,6 +5,12 @@ class DBProjectAdd{
     private $teacher_id;
     private $project_name;
     private $project_description;
+
+	public function escape($db){
+		$this->project_name=$db->real_escape_string($this->project_name);
+		$this->project_description=$db->real_escape_string($this->project_description);
+    }
+
     public function __construct(int $student_id,int $teacher_id,string $project_name,string $project_description){
         $this->student_id=$student_id;
         $this->teacher_id=$teacher_id;
