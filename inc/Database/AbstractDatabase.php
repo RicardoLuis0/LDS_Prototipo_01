@@ -22,12 +22,14 @@ abstract class AbstractDatabase{
 	protected abstract function addUser(DBUserAdd $data):?string;//returns activation key
 	protected abstract function regenKey(string $login):?string;//regenerate activation key, returns null if user is inexistent or already activated
 	protected abstract function searchUsersTeachers(array $q):?array;
+	protected abstract function searchUsersStudents(array $q):?array;
 //project
 	protected abstract function addProject(DBProjectAdd $proj):bool;
 	protected abstract function studentSendDraft(int $user_id,int $project_id):bool;//send draft to teacher as proposal
 	protected abstract function studentMakeDraft(int $user_id,int $project_id):bool;//turn proposal/rejection into draft
 	protected abstract function modifyDraft(int $id,?string $name,?string $desc,?int $teacher):bool;
 	protected abstract function getProjectByID(int $id,bool $get_students=false):?DBProject;
+	protected abstract function getProjectStudents(int $id):array;//array of "DBProjectStudent"s
 	protected abstract function getStudentProjects(int $id,bool $get_students=false):array;
 	protected abstract function getTeacherProjects(int $id,bool $get_students=false):array;
 	protected abstract function studentAcceptProject(int $user_id,int $project_id):bool;//accept project invitation
@@ -127,6 +129,14 @@ abstract class AbstractDatabase{
 		return $this->searchUsersTeachers($arr);
 	}
 
+	public function searchStudents(string $terms):?array{
+		if(!$this->isConnected()){
+			return null;
+		}
+		$arr=explode(" ",$terms);
+		return $this->searchUsersStudents($arr);
+	}
+
 	public function registerProjectDraft(int $teacher_id,string $project_name,string $project_description):bool{
 		if($this->isConnected()&&Session::isLoggedIn()){
 			return $this->addProject(new DBProjectAdd(Session::getUserData()->getId(),$teacher_id,$project_name,$project_description));
@@ -155,6 +165,13 @@ abstract class AbstractDatabase{
 			return null;
 		}
 		return $this->getStudentProjects(Session::getUserData()->getId(),$get_students);
+	}
+
+	public function getAllProjectStudents(int $project_id):?array{
+		if(!$this->isConnected()){
+			return null;
+		}
+		return $this->getProjectStudents($project_id);
 	}
 
 	public function getProject(int $id,bool $get_students=false):?DBProject{

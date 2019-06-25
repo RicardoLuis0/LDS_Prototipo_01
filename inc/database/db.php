@@ -135,7 +135,7 @@ class DB extends AbstractDatabase{
 		return false;
 	}
 
-	private function getProjectStudents(int $id):array{
+	protected function getProjectStudents(int $id):array{
 		$sql="select student_id,accepted,manager from project_student where project_id=".$id.";";
 		$result=$this->db->query($sql);
 		if($result->num_rows>0){
@@ -223,6 +223,20 @@ class DB extends AbstractDatabase{
 	
 	protected function searchUsersTeachers(array $q):?array{
 		$sql="select name,user_id from users where account_activated = true and account_type = 'Teacher' ";
+		foreach($q as $st){
+			$sql.="and name like \"%".$this->db->real_escape_string($st)."%\" ";
+		}
+		$sql.=";";
+		$result=$this->db->query($sql);
+		if($result->num_rows>0){
+			return $result->fetch_all(MYSQLI_NUM);
+		}else{
+			return null;
+		}
+	}
+	
+	protected function searchUsersStudents(array $q):?array{
+		$sql="select name,user_id from users where account_activated = true and account_type = 'Student' ";
 		foreach($q as $st){
 			$sql.="and name like \"%".$this->db->real_escape_string($st)."%\" ";
 		}

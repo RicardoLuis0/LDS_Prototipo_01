@@ -85,7 +85,7 @@
     <div class="modal_content">
         <div class=top><span class="close" onclick="close_modal();">&times;</span></div>
         <div class='searchbox'><input type="text" id="modal_searchinput"><button type=button id="modal_seachbutton" onclick="modal_search();"><img src="img/search.png"></button></div>
-        <div class='searchresult'>
+        <div class='scrollbox'>
             <ul id='search_results'>
             </ul>
         </div>

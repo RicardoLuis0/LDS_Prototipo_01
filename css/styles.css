@@ -100,25 +100,33 @@ div.modal_content div.searchbox button img {
 	height: 25px;
 }
 
-div.modal_content div.searchresult{
+div.modal_content div.scrollbox{
 	overflow:auto;
 	height:50%;
 	width:100%;
 	border:1px solid #ccc;
 }
 
-div.modal_content div.searchresult ul {
+div.modal_content div.scrollbox_short{
+	height:25%;
+}
+
+div.modal_content div.scrollbox ul {
 	list-style-type:none;
 	height:50%px;
 	padding-left:0;
 }
 
-div.modal_content div.searchresult ul li {
+div.modal_content div.scrollbox ul li {
 	display:flex;
 	border-bottom: 1px solid #ccc;
 }
 
-div.modal_content div.searchresult ul li button {
+div.modal_content h4 span {
+	font-weight: initial;
+}
+
+div.modal_content div.scrollbox ul li button {
 	margin-left: auto;
 }
 
@@ -153,6 +161,19 @@ div.modal_content {
 }
   
 .close:hover, .close:focus {
+	color: black;
+	text-decoration: none;
+	cursor: pointer;
+}
+
+.back {
+	color: #aaa;
+	float: left;
+	font-size: 28px;
+	font-weight: bold;
+}
+
+.back:hover, .back:focus {
 	color: black;
 	text-decoration: none;
 	cursor: pointer;
